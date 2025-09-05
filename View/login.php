@@ -1,39 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login - Ponto Eletrônico IFFar</title>
+    <link rel="stylesheet" href="css/login.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="CSS/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-
 <body>
-    <header class="animate-in">
-        <h1>Ponto Eletrônico IFFar</h1>
-    </header>
-    <div class="container">
-        <form action="../Controller/login.php" method="post">
-            <label for="login">Login</label>
-            <input type="text" name="login" id="login" required>
 
-            <label for="senha">Senha:</label>
-            <input type="password" name="senha" id="senha" required>
+    <div class="login-wrapper">
+        <!-- Imagem institucional -->
+        <div class="left-panel">
+            <img src="../img/fundoiffar.jpeg" alt="IFFar" />
+        </div>
 
-            <input type="submit" value="Login" name="btLogin">
+        <!-- Formulário -->
+        <div class="right-panel">
+            <div class="form-box">
+                <h2>Bem-vindo</h2>
+                <p>Acesse o sistema de ponto eletrônico do IFFar SVS</p>
 
-            <p>Não possui um cadastro?</p>
-            <a href="cadastro.php">Clique Aqui</a>
+                <form action="../Controller/login.php" method="post">
+                    <div class="form-group">
+                        <label for="login">Login</label>
+                        <input type="text" id="login" name="login" required>
+                    </div>
 
-        </form>
+                    <div class="form-group">
+                        <label for="senha">Senha</label>
+                        <input type="password" id="senha" name="senha" required>
+                    </div>
 
+                    <input type="submit" value="Entrar" name="btLogin" class="btn-login">
 
-
-
+                    <div class="register-link">
+                        <p>Não possui uma conta? <a href="cadastro.php">Cadastre-se</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-</body>
 
+</body>
 </html>
