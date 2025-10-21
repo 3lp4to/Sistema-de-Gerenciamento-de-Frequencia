@@ -64,10 +64,10 @@ if (isset($_POST['registro'])) {
         <div class="form-box">
             <h4 class="mb-3">Registro de Ponto</h4>
 
-            <form action="#" method="post">
-                <input type="submit" name="registro" class="btn btn-primary w-100"
-                    value="<?= ($_SESSION['estado'] === 'chegada') ? 'Registrar Chegada' : 'Registrar Saída'; ?>">
-            </form>
+            <form action="../Controller/cadastroRegistro.php" method="post">
+    <input type="submit" name="registro" class="btn btn-primary w-100"
+        value="<?= ($_SESSION['estado'] === 'chegada') ? 'Registrar Chegada' : 'Registrar Saída'; ?>">
+</form>
 
             <div class="mt-3">
                 <?= $mensagem ?>
@@ -141,8 +141,8 @@ if (sessionStorage.getItem('inicioTrabalho')) {
 }
 
 // Quando a página é recarregada após o registro
-<?php if (isset($_POST['registro'])): ?>
-    <?php if ($_SESSION['estado'] === 'saida'): ?>
+<?php if (isset($_SESSION['acao'])): ?>
+    <?php if ($_SESSION['acao'] === 'chegada'): ?>
         // Registrou chegada → iniciar contagem
         sessionStorage.setItem('inicioTrabalho', Date.now());
         iniciarContagem();
@@ -150,6 +150,7 @@ if (sessionStorage.getItem('inicioTrabalho')) {
         // Registrou saída → parar contagem
         pararContagem();
     <?php endif; ?>
+    <?php unset($_SESSION['acao']); // limpa para não repetir ?>
 <?php endif; ?>
 
 function iniciarContagem() {

@@ -1,36 +1,41 @@
 <?php
 class Registro {
     private $id;
-    private $idUsuario;
+    private $idusuario;
     private $horaChegada;
     private $horaSaida;
     private $dataRegistro;
-    
-    public function __construct($idUsuario, $horaChegada = null, $horaSaida = null, $dataRegistro = null, $id = null) {
+    private $horas_trabalhadas;
+
+    public function __construct($idusuario, $horaChegada, $horaSaida, $dataRegistro, $horas_trabalhadas, $id = null) {
         $this->id = $id;
-        $this->idUsuario = $idUsuario;
+        $this->idusuario = $idusuario;
         $this->horaChegada = $horaChegada;
         $this->horaSaida = $horaSaida;
         $this->dataRegistro = $dataRegistro;
+        $this->horas_trabalhadas = $horas_trabalhadas;
     }
 
     public function getId() {
         return $this->id;
     }
+
     public function setId($id) {
         $this->id = $id;
     }
 
     public function getIdUsuario() {
-        return $this->idUsuario;
+        return $this->idusuario;
     }
-    public function setIdUsuario($idUsuario) {
-        $this->idUsuario = $idUsuario;
+
+    public function setIdUsuario($idusuario) {
+        $this->idusuario = $idusuario;
     }
 
     public function getHoraChegada() {
         return $this->horaChegada;
     }
+
     public function setHoraChegada($horaChegada) {
         $this->horaChegada = $horaChegada;
     }
@@ -38,6 +43,7 @@ class Registro {
     public function getHoraSaida() {
         return $this->horaSaida;
     }
+
     public function setHoraSaida($horaSaida) {
         $this->horaSaida = $horaSaida;
     }
@@ -45,8 +51,17 @@ class Registro {
     public function getDataRegistro() {
         return $this->dataRegistro;
     }
+
     public function setDataRegistro($dataRegistro) {
         $this->dataRegistro = $dataRegistro;
+    }
+
+    public function getHorasTrabalhadas() {
+        return $this->horas_trabalhadas;
+    }
+
+    public function setHorasTrabalhadas($horas_trabalhadas) {
+        $this->horas_trabalhadas = $horas_trabalhadas;
     }
 }
 ?>

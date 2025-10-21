@@ -5,7 +5,7 @@ class Conexao {
     
     private static $conexao;
     
-    private function __construct() {
+    public function __construct() {
 
     } 
              
