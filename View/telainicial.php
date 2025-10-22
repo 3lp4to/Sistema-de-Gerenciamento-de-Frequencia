@@ -33,6 +33,8 @@ if (isset($_POST['registro'])) {
     <title>Registro de Ponto - IFFar</title>
     <link rel="stylesheet" href="css/registro.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 
 <body>
@@ -44,11 +46,11 @@ if (isset($_POST['registro'])) {
             <button class="menu-btn" id="menuToggle">
                 ☰
             </button>
-            <div class="menu-dropdown" id="menuDropdown">
-                <a href="#">Justificar falta/Registro incorreto</a>
-                <a href="#" id="abrirFolhaPonto">Gerar Folha Ponto (PDF)</a>
-                <a href="../Controller/logout.php">Sair</a>
-        </div>
+           <div class="menu-dropdown" id="menuDropdown">
+    <a href="#">Justificar falta/Registro incorreto</a>
+    <a href="#" id="abrirFolhaPonto">Gerar Folha Ponto (PDF)</a>
+    <a href="../Controller/logout.php">Sair</a>
+</div>
         </div>
     </header>
 
@@ -172,6 +174,43 @@ if (isset($_POST['registro'])) {
         }
     </script>
 
+    <div class="modal fade" id="modalFolhaPonto" tabindex="-1" aria-labelledby="modalFolhaPontoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="../Controller/gerarFolhaPonto.php" method="get" target="_blank">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalFolhaPontoLabel">Gerar Folha de Ponto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="mes" class="form-label">Mês</label>
+            <input type="number" id="mes" name="mes" min="1" max="12" required class="form-control">
+          </div>
+          <div class="mb-3">
+            <label for="ano" class="form-label">Ano</label>
+            <input type="number" id="ano" name="ano" value="<?= date('Y') ?>" required class="form-control">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Gerar PDF</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    const abrirFolhaPonto = document.getElementById('abrirFolhaPonto');
+
+    abrirFolhaPonto.addEventListener('click', (e) => {
+        e.preventDefault();
+        const modal = new bootstrap.Modal(document.getElementById('modalFolhaPonto'));
+        modal.show();
+    });
+</script>
 </body>
 
 </html>
