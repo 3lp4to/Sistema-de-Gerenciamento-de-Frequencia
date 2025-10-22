@@ -36,49 +36,49 @@ if (isset($_POST['registro'])) {
 </head>
 
 <body>
-   <header class="animate-in">
-    <h2 class="mb-0">Ponto Eletrônico IFFar</h2>
+    <header class="animate-in">
+        <h2 class="mb-0">Ponto Eletrônico IFFar</h2>
 
-    <!-- Botão sanduíche -->
-    <div class="menu-container">
-        <button class="menu-btn" id="menuToggle">
-            ☰
-        </button>
-        <div class="menu-dropdown" id="menuDropdown">
-            <a href="#">Justificar falta/Registro incorreto</a>
-            <a href="#">Folha ponto</a>
-            <a href="../Controller/logout.php">Sair</a>
+        <!-- Botão sanduíche -->
+        <div class="menu-container">
+            <button class="menu-btn" id="menuToggle">
+                ☰
+            </button>
+            <div class="menu-dropdown" id="menuDropdown">
+                <a href="#">Justificar falta/Registro incorreto</a>
+                <a href="#" id="abrirFolhaPonto">Gerar Folha Ponto (PDF)</a>
+                <a href="../Controller/logout.php">Sair</a>
         </div>
-    </div>
-</header>
+        </div>
+    </header>
 
 
-<div class="registro-wrapper">
-    <!-- Imagem institucional -->
-    <div class="left-panel">
-        <img src="../img/fundoiffar.jpeg" alt="IFFar">
-    </div>
+    <div class="registro-wrapper">
+        <!-- Imagem institucional -->
+        <div class="left-panel">
+            <img src="../img/fundoiffar.jpeg" alt="IFFar">
+        </div>
 
-    <!-- Formulário de ponto -->
-    <div class="right-panel">
-        <div class="form-box">
-            <h4 class="mb-3">Registro de Ponto</h4>
+        <!-- Formulário de ponto -->
+        <div class="right-panel">
+            <div class="form-box">
+                <h4 class="mb-3">Registro de Ponto</h4>
 
-            <form action="../Controller/cadastroRegistro.php" method="post">
-    <input type="submit" name="registro" class="btn btn-primary w-100"
-        value="<?= ($_SESSION['estado'] === 'chegada') ? 'Registrar Chegada' : 'Registrar Saída'; ?>">
-</form>
+                <form action="../Controller/cadastroRegistro.php" method="post">
+                    <input type="submit" name="registro" class="btn btn-primary w-100"
+                        value="<?= ($_SESSION['estado'] === 'chegada') ? 'Registrar Chegada' : 'Registrar Saída'; ?>">
+                </form>
 
-            <div class="mt-3">
-                <?= $mensagem ?>
+                <div class="mt-3">
+                    <?= $mensagem ?>
+                </div>
+
+                <hr>
+
+                <button class="btn btn-secondary w-100" onclick="pegarLocalizacao()">Testar Localização</button>
             </div>
-
-            <hr>
-
-            <button class="btn btn-secondary w-100" onclick="pegarLocalizacao()">Testar Localização</button>
         </div>
     </div>
-</div>
 
     <script>
         function pegarLocalizacao() {
@@ -102,75 +102,75 @@ if (isset($_POST['registro'])) {
             }
         }
     </script>
-<script>
-    const menuToggle = document.getElementById('menuToggle');
-    const menuDropdown = document.getElementById('menuDropdown');
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const menuDropdown = document.getElementById('menuDropdown');
 
-    // Alterna o menu ao clicar no botão
-    menuToggle.addEventListener('click', (e) => {
-        e.stopPropagation(); // impede que o clique feche o menu imediatamente
-        menuDropdown.classList.toggle('show');
-    });
+        // Alterna o menu ao clicar no botão
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation(); // impede que o clique feche o menu imediatamente
+            menuDropdown.classList.toggle('show');
+        });
 
-    // Fecha o menu ao clicar fora
-    document.addEventListener('click', (e) => {
-        if (!menuDropdown.contains(e.target) && !menuToggle.contains(e.target)) {
-            menuDropdown.classList.remove('show');
+        // Fecha o menu ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!menuDropdown.contains(e.target) && !menuToggle.contains(e.target)) {
+                menuDropdown.classList.remove('show');
+            }
+        });
+    </script>
+
+    <!-- Relógio no canto inferior direito -->
+    <div id="relogio-trabalho"></div>
+
+    <script>
+        // Função para formatar tempo (hh:mm:ss)
+        function formatarTempo(segundos) {
+            const h = String(Math.floor(segundos / 3600)).padStart(2, '0');
+            const m = String(Math.floor((segundos % 3600) / 60)).padStart(2, '0');
+            const s = String(segundos % 60).padStart(2, '0');
+            return `${h}:${m}:${s}`;
         }
-    });
-</script>
 
-<!-- Relógio no canto inferior direito -->
-<div id="relogio-trabalho"></div>
+        let intervalo;
+        const relogio = document.getElementById('relogio-trabalho');
 
-<script>
-// Função para formatar tempo (hh:mm:ss)
-function formatarTempo(segundos) {
-    const h = String(Math.floor(segundos / 3600)).padStart(2, '0');
-    const m = String(Math.floor((segundos % 3600) / 60)).padStart(2, '0');
-    const s = String(segundos % 60).padStart(2, '0');
-    return `${h}:${m}:${s}`;
-}
+        // Verifica se já havia um tempo inicial armazenado
+        if (sessionStorage.getItem('inicioTrabalho')) {
+            iniciarContagem();
+        }
 
-let intervalo;
-const relogio = document.getElementById('relogio-trabalho');
+        // Quando a página é recarregada após o registro
+        <?php if (isset($_SESSION['acao'])): ?>
+            <?php if ($_SESSION['acao'] === 'chegada'): ?>
+                // Registrou chegada → iniciar contagem
+                sessionStorage.setItem('inicioTrabalho', Date.now());
+                iniciarContagem();
+            <?php else: ?>
+                // Registrou saída → parar contagem
+                pararContagem();
+            <?php endif; ?>
+            <?php unset($_SESSION['acao']); // limpa para não repetir ?>
+        <?php endif; ?>
 
-// Verifica se já havia um tempo inicial armazenado
-if (sessionStorage.getItem('inicioTrabalho')) {
-    iniciarContagem();
-}
+        function iniciarContagem() {
+            const inicio = Number(sessionStorage.getItem('inicioTrabalho'));
+            if (!inicio) return;
 
-// Quando a página é recarregada após o registro
-<?php if (isset($_SESSION['acao'])): ?>
-    <?php if ($_SESSION['acao'] === 'chegada'): ?>
-        // Registrou chegada → iniciar contagem
-        sessionStorage.setItem('inicioTrabalho', Date.now());
-        iniciarContagem();
-    <?php else: ?>
-        // Registrou saída → parar contagem
-        pararContagem();
-    <?php endif; ?>
-    <?php unset($_SESSION['acao']); // limpa para não repetir ?>
-<?php endif; ?>
+            clearInterval(intervalo);
+            intervalo = setInterval(() => {
+                const agora = Date.now();
+                const diff = Math.floor((agora - inicio) / 1000);
+                relogio.textContent = "Tempo de trabalho: " + formatarTempo(diff);
+            }, 1000);
+        }
 
-function iniciarContagem() {
-    const inicio = Number(sessionStorage.getItem('inicioTrabalho'));
-    if (!inicio) return;
-
-    clearInterval(intervalo);
-    intervalo = setInterval(() => {
-        const agora = Date.now();
-        const diff = Math.floor((agora - inicio) / 1000);
-        relogio.textContent = "Tempo de trabalho: " + formatarTempo(diff);
-    }, 1000);
-}
-
-function pararContagem() {
-    clearInterval(intervalo);
-    sessionStorage.removeItem('inicioTrabalho');
-    relogio.textContent = "Tempo de trabalho: 00:00:00";
-}
-</script>
+        function pararContagem() {
+            clearInterval(intervalo);
+            sessionStorage.removeItem('inicioTrabalho');
+            relogio.textContent = "Tempo de trabalho: 00:00:00";
+        }
+    </script>
 
 </body>
 

@@ -61,7 +61,23 @@ public function buscarUltimoRegistro($idUsuario)
 
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
+public function buscarRegistrosPorMes($idUsuario, $mes, $ano)
+{
+    $sql = "SELECT horaChegada, horaSaida, horas_trabalhadas, dataRegistro
+            FROM registros
+            WHERE idusuario = :idusuario
+              AND MONTH(dataRegistro) = :mes
+              AND YEAR(dataRegistro) = :ano
+            ORDER BY dataRegistro ASC";
 
+    $stmt = $this->conexao->prepare($sql);
+    $stmt->bindValue(':idusuario', $idUsuario);
+    $stmt->bindValue(':mes', $mes);
+    $stmt->bindValue(':ano', $ano);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 
 }
