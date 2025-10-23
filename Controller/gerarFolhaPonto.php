@@ -1,9 +1,12 @@
 <?php
 session_start();
 date_default_timezone_set('America/Sao_Paulo');
-require_once '../lib/fpdf186/fpdf.php';
-require_once '../Conexao/Conexao.php';
 
+require_once '../lib/fpdf186/fpdf.php';
+require_once '../Controller/UsuarioDAO.php';
+require_once '../Controller/RegistroDAO.php';
+
+// 🔒 Verifica se o usuário está autenticado
 if (!isset($_SESSION['id'])) {
     exit('Usuário não autenticado');
 }
@@ -12,7 +15,32 @@ $idUsuario = $_SESSION['id'];
 $mes = $_GET['mes'] ?? date('m');
 $ano = $_GET['ano'] ?? date('Y');
 
-// Converter número do mês em nome por extenso
+// ===== Instanciar DAOs =====
+$usuarioDAO = new UsuarioDAO();
+$registroDAO = new RegistroDAO();
+
+// Buscar dados do usuário
+$usuario = $usuarioDAO->buscarPorId($idUsuario);
+$nomeUsuario = $usuario['nome'] ?? 'Usuário não encontrado';
+$setorUsuario = $usuario['setor'] ?? '-';
+
+// Buscar registros e total de horas do mês
+$registros = $registroDAO->buscarRegistrosPorMes($idUsuario, $mes, $ano);
+$totalHoras = $registroDAO->calcularTotalHorasMes($idUsuario, $mes, $ano);
+
+// ===== Converter registros em array indexado por dia =====
+$diasNoMes = cal_days_in_month(CAL_GREGORIAN, $mes, $ano);
+$dadosDias = [];
+foreach ($registros as $r) {
+    $dia = (int)date('d', strtotime($r['dataRegistro']));
+    $dadosDias[$dia] = [
+        'entrada' => $r['horaChegada'] ?? '',
+        'saida' => $r['horaSaida'] ?? '',
+        'horas' => $r['horas_trabalhadas'] ?? ''
+    ];
+}
+
+// ===== Nome do mês por extenso =====
 $nomesMeses = [
     1 => 'Janeiro', 2 => 'Fevereiro', 3 => 'Março', 4 => 'Abril',
     5 => 'Maio', 6 => 'Junho', 7 => 'Julho', 8 => 'Agosto',
@@ -20,64 +48,65 @@ $nomesMeses = [
 ];
 $nomeMes = $nomesMeses[(int)$mes];
 
-// Conectar ao banco
-$conexao = (new Conexao())->getConexao();
-
-// Buscar registros do mês
-$stmt = $conexao->prepare("
-    SELECT dataRegistro, horaChegada, horaSaida, horas_trabalhadas
-    FROM registros
-    WHERE idusuario = :idusuario
-      AND MONTH(dataRegistro) = :mes
-      AND YEAR(dataRegistro) = :ano
-    ORDER BY dataRegistro ASC
-");
-$stmt->bindValue(':idusuario', $idUsuario);
-$stmt->bindValue(':mes', $mes);
-$stmt->bindValue(':ano', $ano);
-$stmt->execute();
-$registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Criar PDF
-$pdf = new FPDF();
+// ===== Criar PDF =====
+$pdf = new FPDF('P', 'mm', 'A4');
 $pdf->AddPage();
+$pdf->SetMargins(15, 15, 15);
 
 // ===== Cabeçalho =====
-$pdf->SetFont('Arial', 'B', 16);
-$pdf->Cell(0, 10, utf8_decode("Folha de Ponto - $nomeMes de $ano"), 0, 1, 'C');
+$pdf->SetFont('Arial', 'B', 14);
+$pdf->Cell(0, 7, utf8_decode('INSTITUTO FEDERAL FARROUPILHA - CAMPUS SÃO VICENTE DO SUL'), 0, 1, 'C');
+$pdf->Ln(4);
+$pdf->SetFont('Arial', 'B', 12);
+$pdf->Cell(0, 7, utf8_decode('BOLSA DE ATIVIDADES DE APOIO EDUCACIONAL - ' . $ano), 0, 1, 'C');
+$pdf->Ln(2);
+$pdf->SetFont('Arial', '', 12);
+$pdf->Cell(0, 7, utf8_decode('FICHA DE REGISTRO DE ATIVIDADES - ' . $nomeMes), 0, 1, 'C');
+$pdf->Ln(10);
+
+// ===== Dados do aluno =====
+$pdf->SetFont('Arial', '', 12);
+$pdf->Cell(35, 8, utf8_decode('Nome do aluno:'), 0, 0);
+$pdf->SetFont('Arial', 'B', 12);
+$pdf->Cell(0, 8, utf8_decode($nomeUsuario), 0, 1);
+$pdf->SetFont('Arial', '', 12);
+$pdf->Cell(35, 8, utf8_decode('Setor:'), 0, 0);
+$pdf->Cell(0, 8, utf8_decode($setorUsuario), 0, 1);
 $pdf->Ln(5);
 
-// Cabeçalho da tabela
-$pdf->SetFont('Arial', 'B', 12);
-$pdf->SetFillColor(0, 100, 0); // Verde escuro (IFFar)
-$pdf->SetTextColor(255, 255, 255);
-$pdf->Cell(40, 10, utf8_decode('Data'), 1, 0, 'C', true);
-$pdf->Cell(40, 10, utf8_decode('Entrada'), 1, 0, 'C', true);
-$pdf->Cell(40, 10, utf8_decode('Saída'), 1, 0, 'C', true);
-$pdf->Cell(60, 10, utf8_decode('Horas Trabalhadas'), 1, 1, 'C', true);
+// ===== Tabela de registros =====
+$pdf->SetFont('Arial', 'B', 11);
+$pdf->SetFillColor(200, 200, 200);
+$pdf->Cell(25, 10, utf8_decode('Dia'), 1, 0, 'C', true);
+$pdf->Cell(45, 10, utf8_decode('Entrada'), 1, 0, 'C', true);
+$pdf->Cell(45, 10, utf8_decode('Saída'), 1, 0, 'C', true);
+$pdf->Cell(50, 10, utf8_decode('Horas Trabalhadas'), 1, 1, 'C', true);
 
-// Linhas da tabela
-$pdf->SetFont('Arial', '', 12);
-$pdf->SetTextColor(0, 0, 0);
-
-foreach ($registros as $r) {
-    $pdf->Cell(40, 10, date('d/m/Y', strtotime($r['dataRegistro'])), 1, 0, 'C');
-    $pdf->Cell(40, 10, $r['horaChegada'], 1, 0, 'C');
-    $pdf->Cell(40, 10, $r['horaSaida'] ?: '-', 1, 0, 'C');
-    $pdf->Cell(60, 10, $r['horas_trabalhadas'] ?: '-', 1, 1, 'C');
+$pdf->SetFont('Arial', '', 11);
+for ($dia = 1; $dia <= $diasNoMes; $dia++) {
+    $pdf->Cell(25, 8, str_pad($dia, 2, '0', STR_PAD_LEFT), 1, 0, 'C');
+    $pdf->Cell(45, 8, $dadosDias[$dia]['entrada'] ?? '', 1, 0, 'C');
+    $pdf->Cell(45, 8, $dadosDias[$dia]['saida'] ?? '', 1, 0, 'C');
+    $pdf->Cell(50, 8, $dadosDias[$dia]['horas'] ?? '', 1, 1, 'C');
 }
+
+// ===== Total de horas no mês =====
+$pdf->Ln(4);
+$pdf->SetFont('Arial', 'B', 12);
+$pdf->Cell(0, 10, utf8_decode("Total de horas no mês: $totalHoras"), 0, 1, 'R');
 
 // ===== Rodapé =====
-$pdf->Ln(10);
-$pdf->SetFont('Arial', 'B', 12);
-$pdf->Cell(0, 10, utf8_decode("Gerado em: ") . date('d/m/Y H:i:s'), 0, 1, 'L');
+$pdf->Ln(15);
+$pdf->SetFont('Arial', '', 12);
+$pdf->Cell(90, 10, utf8_decode('Assinatura do aluno: ___________________'), 0, 0, 'L');
+$pdf->Ln(15);
+$pdf->Cell(0, 10, utf8_decode('Carimbo/Assinatura do coordenador do setor: _______________'), 0, 1, 'L');
 
 // ===== Logo IFFar =====
-$logoPath = '../img/logo_iffar.png'; // ajuste se o nome for diferente
+$logoPath = '../View/img/logoiff.png';
 if (file_exists($logoPath)) {
-    // Posição no canto inferior direito
-    $pdf->Image($logoPath, 160, 260, 30); // x, y, largura
+    $pdf->Image($logoPath, 170, 265, 25); // canto inferior direito
 }
 
-// ===== Saída do PDF =====
+// ===== Saída =====
 $pdf->Output('I', "Folha_Ponto_{$nomeMes}_{$ano}.pdf");

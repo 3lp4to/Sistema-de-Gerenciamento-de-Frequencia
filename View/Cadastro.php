@@ -32,6 +32,12 @@
                         <input type="email" name="email" id="email" required>
                     </div>
 
+                    <!-- 🔹 Campo de setor -->
+                    <div class="form-group">
+                        <label for="setor">Setor</label>
+                        <input type="text" name="setor" id="setor" placeholder="Ex: Biblioteca, TI, Secretaria..." required>
+                    </div>
+
                     <div class="form-group">
                         <label for="login">Login</label>
                         <input type="text" name="login" id="login" required>

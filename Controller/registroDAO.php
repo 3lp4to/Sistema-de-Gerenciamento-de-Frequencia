@@ -78,6 +78,21 @@ public function buscarRegistrosPorMes($idUsuario, $mes, $ano)
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-
-
+  public function calcularTotalHorasMes($idUsuario, $mes, $ano)
+    {
+        $sql = "SELECT SEC_TO_TIME(SUM(TIME_TO_SEC(horas_trabalhadas))) AS total
+                FROM registros
+                WHERE idusuario = :idusuario
+                  AND MONTH(dataRegistro) = :mes
+                  AND YEAR(dataRegistro) = :ano";
+        $stmt = $this->conexao->prepare($sql);
+        $stmt->bindValue(':idusuario', $idUsuario);
+        $stmt->bindValue(':mes', $mes);
+        $stmt->bindValue(':ano', $ano);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado['total'] ?? '00:00:00';
+    }
 }
+
+

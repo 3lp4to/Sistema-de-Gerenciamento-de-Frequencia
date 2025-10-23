@@ -47,7 +47,7 @@ if (isset($_POST['registro'])) {
                 ☰
             </button>
            <div class="menu-dropdown" id="menuDropdown">
-    <a href="#">Justificar falta/Registro incorreto</a>
+   <a href="justificativa.php">Justificar falta/Registro incorreto</a>
     <a href="#" id="abrirFolhaPonto">Gerar Folha Ponto (PDF)</a>
     <a href="../Controller/logout.php">Sair</a>
 </div>
