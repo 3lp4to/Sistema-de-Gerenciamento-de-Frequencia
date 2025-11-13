@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+// Gera o token CSRF se não existir
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Verifica se o usuário está logado
 if (!isset($_SESSION['id'])) {
     header('Location: login.php');
@@ -13,6 +18,7 @@ if (isset($_SESSION['msg'])) {
     unset($_SESSION['msg']);
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -41,7 +47,7 @@ if (isset($_SESSION['msg'])) {
 
         <div class="mb-3">
             <input type="submit" value="Enviar" class="btn btn-primary" id="btnEnviar">
-            <a href="registroPonto.php" class="btn btn-secondary">Voltar</a>
+            <a href="telainicial.php" class="btn btn-secondary">Voltar</a>
         </div>
     </form>
 </div>

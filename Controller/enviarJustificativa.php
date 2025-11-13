@@ -34,10 +34,10 @@ if (isset($_POST['justificativa'])) {
         $conexao = Conexao::getConexao();
 
         // Preparar e executar o SQL de inserção
-        $stmt = $conexao->prepare("INSERT INTO justificativas (usuario_id, texto, data_envio) 
-                                   VALUES (:usuario_id, :texto, :data_envio)");
+        $stmt = $conexao->prepare("INSERT INTO justificativas (idusuario, texto, data_envio) 
+                                   VALUES (:idusuario, :texto, :data_envio)");
 
-        $stmt->bindValue(':usuario_id', $usuario_id);
+        $stmt->bindValue(':idusuario', $usuario_id);
         $stmt->bindValue(':texto', $texto);
         $stmt->bindValue(':data_envio', $data_envio);
 

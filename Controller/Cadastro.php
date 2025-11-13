@@ -32,7 +32,7 @@ if (isset($_POST['btCadastrar'])) {
     }
 
     // Cria o objeto do usuário (sem criptografia)
-    $usuario = new Usuario($nome, $email, $setor, $login, $senha);
+    $usuario = new Usuario($nome, $email, $setor, $login, $senha, $supervisorId, 'bolsista');
 
     // Tenta cadastrar o usuário no banco
     if ($usuarioDAO->cadastrarUsuario($usuario)) {

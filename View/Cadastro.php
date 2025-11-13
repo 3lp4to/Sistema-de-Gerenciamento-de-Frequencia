@@ -52,12 +52,14 @@
                         <label for="confSenha">Confirmar senha</label>
                         <input type="password" name="confSenha" id="confSenha" required aria-required="true" class="form-control">
                     </div>
+      
 
                     <input type="submit" value="Cadastrar" name="btCadastrar" class="btn-cadastrar">
 
                     <div class="login-link">
                         <p>Já possui uma conta? <a href="login.php">Faça login</a></p>
                     </div>
+                    
                 </form>
             </div>
         </div>
