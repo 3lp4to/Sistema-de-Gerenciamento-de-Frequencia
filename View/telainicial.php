@@ -1,16 +1,26 @@
 <?php
 session_start();
 
+// Verifica se o usuário está logado
 if (!isset($_SESSION['id'])) {
+    header('Location: login.php');
     exit;
 }
 
+// Controle de acesso: admin pode cadastrar supervisor e supervisor pode cadastrar bolsista
+if ($_SESSION['tipo'] != 'admin' && $_SESSION['tipo'] != 'supervisor') {
+    echo "Acesso negado!";
+    exit;
+}
+
+// Armazena o estado (chegada/saída) do usuário
 if (!isset($_SESSION['estado'])) {
     $_SESSION['estado'] = 'chegada';
 }
 
 $mensagem = '';
 
+// Processa o registro de ponto
 if (isset($_POST['registro'])) {
     date_default_timezone_set('America/Sao_Paulo');
     $dataAtual = date("d/m/Y H:i:s");
@@ -24,6 +34,7 @@ if (isset($_POST['registro'])) {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -34,7 +45,6 @@ if (isset($_POST['registro'])) {
     <link rel="stylesheet" href="css/registro.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </head>
 
 <body>
@@ -46,14 +56,20 @@ if (isset($_POST['registro'])) {
             <button class="menu-btn" id="menuToggle">
                 ☰
             </button>
-           <div class="menu-dropdown" id="menuDropdown">
-   <a href="justificativa.php">Justificar falta/Registro incorreto</a>
-    <a href="#" id="abrirFolhaPonto">Gerar Folha Ponto (PDF)</a>
-    <a href="../Controller/logout.php">Sair</a>
-</div>
+            <div class="menu-dropdown" id="menuDropdown">
+                <!-- Menu de acordo com o tipo de usuário -->
+                <a href="justificativa.php">Justificar falta/Registro incorreto</a>
+                <a href="#" id="abrirFolhaPonto">Gerar Folha Ponto (PDF)</a>
+                <a href="../Controller/logout.php">Sair</a>
+
+                <?php if ($_SESSION['tipo'] == 'supervisor'): ?>
+                    <a href="cadastroBolsista.php">Cadastrar Bolsista</a>
+                <?php elseif ($_SESSION['tipo'] == 'admin'): ?>
+                    <a href="cadastroSupervisor.php">Cadastrar Supervisor</a>
+                <?php endif; ?>
+            </div>
         </div>
     </header>
-
 
     <div class="registro-wrapper">
         <!-- Imagem institucional -->
@@ -84,30 +100,31 @@ if (isset($_POST['registro'])) {
 
     <script>
     function pegarLocalizacao() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (pos) {
-            const lat = pos.coords.latitude;
-            const lon = pos.coords.longitude;
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (pos) {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
 
-            // Exibir localização ao usuário
-            alert(`Latitude: ${lat}\nLongitude: ${lon}`);
+                // Exibir localização ao usuário
+                alert(`Latitude: ${lat}\nLongitude: ${lon}`);
 
-            // Enviar a localização para o servidor
-            fetch('teste.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ latitude: lat, longitude: lon })
-            })
-            .then(res => res.text())
-            .then(data => alert(data));
-        }, function (error) {
-            alert("Erro ao capturar localização: " + error.message);
-        });
-    } else {
-        alert("Geolocalização não suportada pelo navegador.");
+                // Enviar a localização para o servidor
+                fetch('teste.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ latitude: lat, longitude: lon })
+                })
+                .then(res => res.text())
+                .then(data => alert(data));
+            }, function (error) {
+                alert("Erro ao capturar localização: " + error.message);
+            });
+        } else {
+            alert("Geolocalização não suportada pelo navegador.");
+        }
     }
-}
     </script>
+
     <script>
         const menuToggle = document.getElementById('menuToggle');
         const menuDropdown = document.getElementById('menuDropdown');
@@ -205,7 +222,6 @@ if (isset($_POST['registro'])) {
   </div>
 </div>
 
-
 <script>
     const abrirFolhaPonto = document.getElementById('abrirFolhaPonto');
 
@@ -215,6 +231,6 @@ if (isset($_POST['registro'])) {
         modal.show();
     });
 </script>
-</body>
 
+</body>
 </html>

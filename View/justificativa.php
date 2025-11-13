@@ -1,17 +1,24 @@
 <?php
 session_start();
 
-// Gera o token CSRF se não existir
-if (!isset($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
-// Verifica se o usuário está logado
+// Verifica se o usuário está logado e se o tipo de usuário é 'admin' ou 'supervisor'
 if (!isset($_SESSION['id'])) {
     header('Location: login.php');
     exit;
 }
 
+// Redireciona para a tela inicial se o usuário não for 'admin' ou 'supervisor'
+if (!in_array($_SESSION['tipo'], ['admin', 'supervisor'])) {
+    echo "Acesso negado!";
+    exit;
+}
+
+// Gera o token CSRF se não existir
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Verifica se há alguma mensagem de erro ou sucesso
 $mensagem = '';
 if (isset($_SESSION['msg'])) {
     $mensagem = $_SESSION['msg'];
@@ -32,17 +39,18 @@ if (isset($_SESSION['msg'])) {
     <h3>Justificar falta / Registro incorreto</h3>
     <p>Preencha a justificativa abaixo e envie para o supervisor.</p>
 
-    <?php if ($mensagem): ?>
+    <!-- Exibe mensagem caso exista -->
+    <?php if (!empty($mensagem)): ?>
         <div class="alert alert-info"><?= htmlspecialchars($mensagem) ?></div>
     <?php endif; ?>
 
     <form action="../Controller/enviarJustificativa.php" method="post" id="formJustificativa">
         <!-- Token CSRF para proteção -->
-        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
 
         <div class="mb-3">
             <label for="justificativa" class="form-label">Justificativa</label>
-            <textarea name="justificativa" id="justificativa" rows="5" class="form-control" required aria-required="true" placeholder="Descreva a razão do erro ou falta..."></textarea>
+            <textarea name="justificativa" id="justificativa" rows="5" class="form-control" required placeholder="Descreva a razão do erro ou falta..."></textarea>
         </div>
 
         <div class="mb-3">

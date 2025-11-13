@@ -13,7 +13,7 @@ class UsuarioDAO
     }
 
     /**
-     * 🔹 Cadastrar novo usuário (sem criptografia)
+     * 🔹 Cadastrar novo usuário (sem criptografia de senha)
      */
     public function cadastrarUsuario(Usuario $usuario)
     {
@@ -27,12 +27,14 @@ class UsuarioDAO
             $stmt->bindValue(":email", $usuario->getEmail());
             $stmt->bindValue(":setor", $usuario->getSetor());
             $stmt->bindValue(":login", $usuario->getLogin());
-            $stmt->bindValue(":senha", $usuario->getSenha()); // senha em texto puro
+            $stmt->bindValue(":senha", $usuario->getSenha()); // Senha em texto puro
             $stmt->bindValue(":idsupervisor", $usuario->getIdSupervisor(), PDO::PARAM_INT);
 
             return $stmt->execute();
         } catch (PDOException $e) {
-            echo "Erro ao cadastrar o usuário: " . $e->getMessage();
+            // Em produção, registrar o erro em um log e mostrar uma mensagem genérica
+            error_log($e->getMessage()); // Log do erro
+            echo "Erro ao cadastrar o usuário. Tente novamente mais tarde.";
             return false;
         }
     }
@@ -53,7 +55,8 @@ class UsuarioDAO
 
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo "Erro ao buscar o usuário: " . $e->getMessage();
+            error_log($e->getMessage()); // Log do erro
+            echo "Erro ao buscar o usuário. Tente novamente mais tarde.";
             return null;
         }
     }
@@ -71,7 +74,8 @@ class UsuarioDAO
             $stmt = $this->conexao->query($sql);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo "Erro ao listar usuários: " . $e->getMessage();
+            error_log($e->getMessage()); // Log do erro
+            echo "Erro ao listar usuários. Tente novamente mais tarde.";
             return [];
         }
     }
@@ -89,13 +93,14 @@ class UsuarioDAO
 
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo "Erro ao buscar o login: " . $e->getMessage();
+            error_log($e->getMessage()); // Log do erro
+            echo "Erro ao buscar o login. Tente novamente mais tarde.";
             return null;
         }
     }
 
     /**
-     * 🔹 Atualizar dados do usuário (sem criptografia)
+     * 🔹 Atualizar dados do usuário (sem criptografia de senha)
      */
     public function atualizarUsuario(Usuario $usuario)
     {
@@ -114,13 +119,14 @@ class UsuarioDAO
             $stmt->bindValue(":email", $usuario->getEmail());
             $stmt->bindValue(":setor", $usuario->getSetor());
             $stmt->bindValue(":login", $usuario->getLogin());
-            $stmt->bindValue(":senha", $usuario->getSenha()); // senha em texto puro
+            $stmt->bindValue(":senha", $usuario->getSenha()); // Senha em texto puro
             $stmt->bindValue(":idsupervisor", $usuario->getIdSupervisor(), PDO::PARAM_INT);
             $stmt->bindValue(":id", $usuario->getId(), PDO::PARAM_INT);
 
             return $stmt->execute();
         } catch (PDOException $e) {
-            echo "Erro ao atualizar o usuário: " . $e->getMessage();
+            error_log($e->getMessage()); // Log do erro
+            echo "Erro ao atualizar o usuário. Tente novamente mais tarde.";
             return false;
         }
     }
@@ -137,7 +143,8 @@ class UsuarioDAO
 
             return $stmt->execute();
         } catch (PDOException $e) {
-            echo "Erro ao excluir o usuário: " . $e->getMessage();
+            error_log($e->getMessage()); // Log do erro
+            echo "Erro ao excluir o usuário. Tente novamente mais tarde.";
             return false;
         }
     }
@@ -159,7 +166,8 @@ class UsuarioDAO
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo "Erro ao listar subordinados: " . $e->getMessage();
+            error_log($e->getMessage()); // Log do erro
+            echo "Erro ao listar subordinados. Tente novamente mais tarde.";
             return [];
         }
     }

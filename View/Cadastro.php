@@ -52,7 +52,16 @@
                         <label for="confSenha">Confirmar senha</label>
                         <input type="password" name="confSenha" id="confSenha" required aria-required="true" class="form-control">
                     </div>
-      
+
+                    <!-- 🔹 Campo para escolher o tipo de usuário -->
+                    <div class="form-group">
+                        <label for="tipo">Tipo de Usuário</label>
+                        <select name="tipo" id="tipo" class="form-control" required>
+                            <option value="admin">Administrador</option>
+                            <option value="supervisor">Supervisor</option>
+                            <option value="bolsista">Bolsista</option>
+                        </select>
+                    </div>
 
                     <input type="submit" value="Cadastrar" name="btCadastrar" class="btn-cadastrar">
 
