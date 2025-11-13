@@ -21,15 +21,23 @@
                 <h2>Bem-vindo</h2>
                 <p>Acesse o sistema de ponto eletrônico do IFFar SVS</p>
 
+                <!-- Exibindo mensagens de erro se houver -->
+                <?php if (isset($_SESSION['erro_login'])): ?>
+                    <div class="alert alert-danger">
+                        <?= htmlspecialchars($_SESSION['erro_login']); ?>
+                    </div>
+                    <?php unset($_SESSION['erro_login']); ?>
+                <?php endif; ?>
+
                 <form action="../Controller/login.php" method="post">
                     <div class="form-group">
                         <label for="login">Login</label>
-                        <input type="text" id="login" name="login" required>
+                        <input type="text" id="login" name="login" required aria-label="Login">
                     </div>
 
                     <div class="form-group">
                         <label for="senha">Senha</label>
-                        <input type="password" id="senha" name="senha" required>
+                        <input type="password" id="senha" name="senha" required aria-label="Senha">
                     </div>
 
                     <input type="submit" value="Entrar" name="btLogin" class="btn-login">

@@ -7,7 +7,7 @@ class Registro {
     private $dataRegistro;
     private $horas_trabalhadas;
 
-    public function __construct($idusuario, $horaChegada, $horaSaida, $dataRegistro, $horas_trabalhadas, $id = null) {
+    public function __construct($idusuario, $horaChegada, $horaSaida, $dataRegistro, $horas_trabalhadas = null, $id = null) {
         $this->id = $id;
         $this->idusuario = $idusuario;
         $this->horaChegada = $horaChegada;
@@ -16,10 +16,10 @@ class Registro {
         $this->horas_trabalhadas = $horas_trabalhadas;
     }
 
+    // ======= Getters e Setters =======
     public function getId() {
         return $this->id;
     }
-
     public function setId($id) {
         $this->id = $id;
     }
@@ -27,7 +27,6 @@ class Registro {
     public function getIdUsuario() {
         return $this->idusuario;
     }
-
     public function setIdUsuario($idusuario) {
         $this->idusuario = $idusuario;
     }
@@ -35,7 +34,6 @@ class Registro {
     public function getHoraChegada() {
         return $this->horaChegada;
     }
-
     public function setHoraChegada($horaChegada) {
         $this->horaChegada = $horaChegada;
     }
@@ -43,7 +41,6 @@ class Registro {
     public function getHoraSaida() {
         return $this->horaSaida;
     }
-
     public function setHoraSaida($horaSaida) {
         $this->horaSaida = $horaSaida;
     }
@@ -51,7 +48,6 @@ class Registro {
     public function getDataRegistro() {
         return $this->dataRegistro;
     }
-
     public function setDataRegistro($dataRegistro) {
         $this->dataRegistro = $dataRegistro;
     }
@@ -59,7 +55,6 @@ class Registro {
     public function getHorasTrabalhadas() {
         return $this->horas_trabalhadas;
     }
-
     public function setHorasTrabalhadas($horas_trabalhadas) {
         $this->horas_trabalhadas = $horas_trabalhadas;
     }

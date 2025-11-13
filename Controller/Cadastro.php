@@ -11,21 +11,30 @@ if (isset($_POST['btCadastrar'])) {
     $senha = trim($_POST['senha']);
     $confSenha = trim($_POST['confSenha']);
 
-    // Verifica campos obrigatórios e senha
+    // Verifica campos obrigatórios
     if (empty($nome) || empty($email) || empty($setor) || empty($login) || empty($senha) || empty($confSenha)) {
         echo "<script>alert('Por favor, preencha todos os campos.'); window.location.href='../View/cadastro.php';</script>";
         exit;
     }
 
+    // Verifica se as senhas coincidem
     if ($senha !== $confSenha) {
         echo "<script>alert('As senhas não coincidem!'); window.location.href='../View/cadastro.php';</script>";
         exit;
     }
 
-    // Sem criptografia: usa a senha diretamente
-    $usuario = new Usuario($nome, $email, $setor, $login, $senha);
+    // Verifica se o login já está cadastrado
     $usuarioDAO = new UsuarioDAO();
+    $usuarioExistente = $usuarioDAO->buscarPorLogin($login);
+    if ($usuarioExistente) {
+        echo "<script>alert('O login já está em uso!'); window.location.href='../View/cadastro.php';</script>";
+        exit;
+    }
 
+    // Cria o objeto do usuário (sem criptografia)
+    $usuario = new Usuario($nome, $email, $setor, $login, $senha);
+
+    // Tenta cadastrar o usuário no banco
     if ($usuarioDAO->cadastrarUsuario($usuario)) {
         echo "<script>alert('Usuário cadastrado com sucesso!'); window.location.href='../View/login.php';</script>";
         exit;

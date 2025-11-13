@@ -2,6 +2,7 @@
 session_start();
 date_default_timezone_set('America/Sao_Paulo');
 
+// Carregar dependências
 require_once '../lib/fpdf186/fpdf.php';
 require_once '../Controller/UsuarioDAO.php';
 require_once '../Controller/RegistroDAO.php';
@@ -12,8 +13,17 @@ if (!isset($_SESSION['id'])) {
 }
 
 $idUsuario = $_SESSION['id'];
-$mes = $_GET['mes'] ?? date('m');
-$ano = $_GET['ano'] ?? date('Y');
+$mes = isset($_GET['mes']) ? (int)$_GET['mes'] : date('m');
+$ano = isset($_GET['ano']) ? (int)$_GET['ano'] : date('Y');
+
+// Verificar se mês e ano são válidos
+if ($mes < 1 || $mes > 12) {
+    exit('Mês inválido.');
+}
+
+if ($ano < 2000 || $ano > date('Y')) {
+    exit('Ano inválido.');
+}
 
 // ===== Instanciar DAOs =====
 $usuarioDAO = new UsuarioDAO();
@@ -46,14 +56,14 @@ $nomesMeses = [
     5 => 'Maio', 6 => 'Junho', 7 => 'Julho', 8 => 'Agosto',
     9 => 'Setembro', 10 => 'Outubro', 11 => 'Novembro', 12 => 'Dezembro'
 ];
-$nomeMes = $nomesMeses[(int)$mes];
+$nomeMes = $nomesMeses[$mes];
 
 // ===== Criar PDF =====
 $pdf = new FPDF('P', 'mm', 'A4');
 $pdf->AddPage();
 $pdf->SetMargins(15, 15, 15);
 
-// ===== Cabeçalho =====
+// Cabeçalho do PDF
 $pdf->SetFont('Arial', 'B', 14);
 $pdf->Cell(0, 7, utf8_decode('INSTITUTO FEDERAL FARROUPILHA - CAMPUS SÃO VICENTE DO SUL'), 0, 1, 'C');
 $pdf->Ln(4);
@@ -64,7 +74,7 @@ $pdf->SetFont('Arial', '', 12);
 $pdf->Cell(0, 7, utf8_decode('FICHA DE REGISTRO DE ATIVIDADES - ' . $nomeMes), 0, 1, 'C');
 $pdf->Ln(10);
 
-// ===== Dados do aluno =====
+// Dados do aluno
 $pdf->SetFont('Arial', '', 12);
 $pdf->Cell(35, 8, utf8_decode('Nome do aluno:'), 0, 0);
 $pdf->SetFont('Arial', 'B', 12);
@@ -74,7 +84,7 @@ $pdf->Cell(35, 8, utf8_decode('Setor:'), 0, 0);
 $pdf->Cell(0, 8, utf8_decode($setorUsuario), 0, 1);
 $pdf->Ln(5);
 
-// ===== Tabela de registros =====
+// Tabela de registros
 $pdf->SetFont('Arial', 'B', 11);
 $pdf->SetFillColor(200, 200, 200);
 $pdf->Cell(25, 10, utf8_decode('Dia'), 1, 0, 'C', true);
@@ -90,23 +100,29 @@ for ($dia = 1; $dia <= $diasNoMes; $dia++) {
     $pdf->Cell(50, 8, $dadosDias[$dia]['horas'] ?? '', 1, 1, 'C');
 }
 
-// ===== Total de horas no mês =====
+// Total de horas no mês
 $pdf->Ln(4);
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->Cell(0, 10, utf8_decode("Total de horas no mês: $totalHoras"), 0, 1, 'R');
 
-// ===== Rodapé =====
+// Rodapé
 $pdf->Ln(15);
 $pdf->SetFont('Arial', '', 12);
 $pdf->Cell(90, 10, utf8_decode('Assinatura do aluno: ___________________'), 0, 0, 'L');
 $pdf->Ln(15);
 $pdf->Cell(0, 10, utf8_decode('Carimbo/Assinatura do coordenador do setor: _______________'), 0, 1, 'L');
 
-// ===== Logo IFFar =====
+// Logo IFFar
 $logoPath = '../View/img/logoiff.png';
 if (file_exists($logoPath)) {
-    $pdf->Image($logoPath, 170, 265, 25); // canto inferior direito
+    $pdf->Image($logoPath, 170, 265, 25); // Canto inferior direito
 }
 
-// ===== Saída =====
+// Definir cabeçalhos para download do PDF
+header('Content-Type: application/pdf');
+header('Content-Disposition: inline; filename="Folha_Ponto_' . $nomeMes . '_' . $ano . '.pdf"');
+
+// Saída do PDF
 $pdf->Output('I', "Folha_Ponto_{$nomeMes}_{$ano}.pdf");
+exit;
+?>

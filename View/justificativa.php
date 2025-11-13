@@ -27,17 +27,35 @@ if (isset($_SESSION['msg'])) {
     <p>Preencha a justificativa abaixo e envie para o supervisor.</p>
 
     <?php if ($mensagem): ?>
-        <div class="alert alert-info"><?= $mensagem ?></div>
+        <div class="alert alert-info"><?= htmlspecialchars($mensagem) ?></div>
     <?php endif; ?>
 
-    <form action="../Controller/enviarJustificativa.php" method="post">
+    <form action="../Controller/enviarJustificativa.php" method="post" id="formJustificativa">
+        <!-- Token CSRF para proteção -->
+        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
         <div class="mb-3">
             <label for="justificativa" class="form-label">Justificativa</label>
-            <textarea name="justificativa" id="justificativa" rows="5" class="form-control" required></textarea>
+            <textarea name="justificativa" id="justificativa" rows="5" class="form-control" required aria-required="true" placeholder="Descreva a razão do erro ou falta..."></textarea>
         </div>
-        <input type="submit" value="Enviar" class="btn btn-primary">
-        <a href="registroPonto.php" class="btn btn-secondary">Voltar</a>
+
+        <div class="mb-3">
+            <input type="submit" value="Enviar" class="btn btn-primary" id="btnEnviar">
+            <a href="registroPonto.php" class="btn btn-secondary">Voltar</a>
+        </div>
     </form>
 </div>
+
+<!-- Validação do formulário com JavaScript -->
+<script>
+    document.getElementById('formJustificativa').addEventListener('submit', function(event) {
+        var justificativa = document.getElementById('justificativa').value.trim();
+
+        if (!justificativa) {
+            alert('Por favor, preencha o campo de justificativa antes de enviar.');
+            event.preventDefault(); // Impede o envio do formulário
+        }
+    });
+</script>
 </body>
 </html>

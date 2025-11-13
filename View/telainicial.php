@@ -83,26 +83,30 @@ if (isset($_POST['registro'])) {
     </div>
 
     <script>
-        function pegarLocalizacao() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (pos) {
-                    const lat = pos.coords.latitude;
-                    const lon = pos.coords.longitude;
+    function pegarLocalizacao() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (pos) {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
 
-                    fetch('teste.php', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ latitude: lat, longitude: lon })
-                    })
-                        .then(res => res.text())
-                        .then(data => alert(data));
-                }, function (error) {
-                    alert("Erro ao capturar localização: " + error.message);
-                });
-            } else {
-                alert("Geolocalização não suportada pelo navegador.");
-            }
-        }
+            // Exibir localização ao usuário
+            alert(`Latitude: ${lat}\nLongitude: ${lon}`);
+
+            // Enviar a localização para o servidor
+            fetch('teste.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ latitude: lat, longitude: lon })
+            })
+            .then(res => res.text())
+            .then(data => alert(data));
+        }, function (error) {
+            alert("Erro ao capturar localização: " + error.message);
+        });
+    } else {
+        alert("Geolocalização não suportada pelo navegador.");
+    }
+}
     </script>
     <script>
         const menuToggle = document.getElementById('menuToggle');

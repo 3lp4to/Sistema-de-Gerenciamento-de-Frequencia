@@ -21,36 +21,36 @@
                 <h2>Crie sua conta</h2>
                 <p>Cadastre-se para registrar sua frequência no sistema do IFFar SVS</p>
 
-                <form action="../Controller/Cadastro.php" method="post">
+                <form action="../Controller/Cadastro.php" method="post" id="formCadastro">
                     <div class="form-group">
                         <label for="nome">Nome completo</label>
-                        <input type="text" name="nome" id="nome" required>
+                        <input type="text" name="nome" id="nome" required aria-required="true" class="form-control">
                     </div>
 
                     <div class="form-group">
                         <label for="email">E-mail institucional</label>
-                        <input type="email" name="email" id="email" required>
+                        <input type="email" name="email" id="email" required aria-required="true" class="form-control">
                     </div>
 
                     <!-- 🔹 Campo de setor -->
                     <div class="form-group">
                         <label for="setor">Setor</label>
-                        <input type="text" name="setor" id="setor" placeholder="Ex: Biblioteca, TI, Secretaria..." required>
+                        <input type="text" name="setor" id="setor" placeholder="Ex: Biblioteca, TI, Secretaria..." required aria-required="true" class="form-control">
                     </div>
 
                     <div class="form-group">
                         <label for="login">Login</label>
-                        <input type="text" name="login" id="login" required>
+                        <input type="text" name="login" id="login" required aria-required="true" class="form-control">
                     </div>
 
                     <div class="form-group">
                         <label for="senha">Senha</label>
-                        <input type="password" name="senha" id="senha" required>
+                        <input type="password" name="senha" id="senha" required aria-required="true" class="form-control">
                     </div>
 
                     <div class="form-group">
                         <label for="confSenha">Confirmar senha</label>
-                        <input type="password" name="confSenha" id="confSenha" required>
+                        <input type="password" name="confSenha" id="confSenha" required aria-required="true" class="form-control">
                     </div>
 
                     <input type="submit" value="Cadastrar" name="btCadastrar" class="btn-cadastrar">
@@ -62,6 +62,19 @@
             </div>
         </div>
     </div>
+
+    <!-- Validação de Senha com JavaScript -->
+    <script>
+        document.getElementById('formCadastro').addEventListener('submit', function(event) {
+            var senha = document.getElementById('senha').value;
+            var confSenha = document.getElementById('confSenha').value;
+
+            if (senha !== confSenha) {
+                alert('As senhas não coincidem. Por favor, verifique.');
+                event.preventDefault(); // Impede o envio do formulário
+            }
+        });
+    </script>
 
 </body>
 </html>

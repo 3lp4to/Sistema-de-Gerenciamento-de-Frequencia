@@ -6,16 +6,19 @@ class Usuario {
     private $setor;
     private $login;
     private $senha;
+    private $idsupervisor;
 
-    public function __construct($nome, $email, $setor, $login, $senha, $id = null) {
+    public function __construct($nome, $email, $setor, $login, $senha, $idsupervisor = null, $id = null) {
         $this->id = $id;
         $this->nome = $nome;
         $this->email = $email;
         $this->setor = $setor;
         $this->login = $login;
         $this->senha = $senha;
+        $this->idsupervisor = $idsupervisor;
     }
 
+    // ======= Getters e Setters =======
     public function getId() {
         return $this->id;
     }
@@ -56,6 +59,13 @@ class Usuario {
     }
     public function setSenha($senha) {
         $this->senha = $senha;
+    }
+
+    public function getIdSupervisor() {
+        return $this->idsupervisor;
+    }
+    public function setIdSupervisor($idsupervisor) {
+        $this->idsupervisor = $idsupervisor;
     }
 }
 ?>
