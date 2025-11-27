@@ -2,12 +2,10 @@
 session_start();
 date_default_timezone_set('America/Sao_Paulo');
 
-// Carregar dependências
 require_once '../lib/fpdf186/fpdf.php';
 require_once '../Controller/UsuarioDAO.php';
 require_once '../Controller/RegistroDAO.php';
 
-// 🔒 Verifica se o usuário está autenticado
 if (!isset($_SESSION['id'])) {
     exit('Usuário não autenticado');
 }
@@ -16,7 +14,6 @@ $idUsuario = $_SESSION['id'];
 $mes = isset($_GET['mes']) ? (int)$_GET['mes'] : date('m');
 $ano = isset($_GET['ano']) ? (int)$_GET['ano'] : date('Y');
 
-// Verificar se mês e ano são válidos
 if ($mes < 1 || $mes > 12) {
     exit('Mês inválido.');
 }
@@ -25,20 +22,16 @@ if ($ano < 2000 || $ano > date('Y')) {
     exit('Ano inválido.');
 }
 
-// ===== Instanciar DAOs =====
 $usuarioDAO = new UsuarioDAO();
 $registroDAO = new RegistroDAO();
 
-// Buscar dados do usuário
 $usuario = $usuarioDAO->buscarPorId($idUsuario);
 $nomeUsuario = $usuario['nome'] ?? 'Usuário não encontrado';
 $setorUsuario = $usuario['setor'] ?? '-';
 
-// Buscar registros e total de horas do mês
 $registros = $registroDAO->buscarRegistrosPorMes($idUsuario, $mes, $ano);
 $totalHoras = $registroDAO->calcularTotalHorasMes($idUsuario, $mes, $ano);
 
-// ===== Converter registros em array indexado por dia =====
 $diasNoMes = cal_days_in_month(CAL_GREGORIAN, $mes, $ano);
 $dadosDias = [];
 foreach ($registros as $r) {
@@ -50,7 +43,7 @@ foreach ($registros as $r) {
     ];
 }
 
-// ===== Nome do mês por extenso =====
+// Nome do mês por extenso
 $nomesMeses = [
     1 => 'Janeiro', 2 => 'Fevereiro', 3 => 'Março', 4 => 'Abril',
     5 => 'Maio', 6 => 'Junho', 7 => 'Julho', 8 => 'Agosto',
@@ -58,8 +51,24 @@ $nomesMeses = [
 ];
 $nomeMes = $nomesMeses[$mes];
 
-// ===== Criar PDF =====
-$pdf = new FPDF('P', 'mm', 'A4');
+// ================================================================
+// CLASSE EXTENDIDA COM LOGO EM TODAS AS PÁGINAS
+// ================================================================
+class PDF extends FPDF {
+    function Footer() {
+        $logoPath = '../View/img/logoiff.png';
+
+        if (file_exists($logoPath)) {
+            // Posição a 25–30mm do rodapé
+            $this->SetY(-30);
+            // Logo no canto inferior direito
+            $this->Image($logoPath, 170, $this->GetY(), 25);
+        }
+    }
+}
+
+// Criar PDF usando a classe estendida
+$pdf = new PDF('P', 'mm', 'A4');
 $pdf->AddPage();
 $pdf->SetMargins(15, 15, 15);
 
@@ -79,6 +88,7 @@ $pdf->SetFont('Arial', '', 12);
 $pdf->Cell(35, 8, utf8_decode('Nome do aluno:'), 0, 0);
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->Cell(0, 8, utf8_decode($nomeUsuario), 0, 1);
+
 $pdf->SetFont('Arial', '', 12);
 $pdf->Cell(35, 8, utf8_decode('Setor:'), 0, 0);
 $pdf->Cell(0, 8, utf8_decode($setorUsuario), 0, 1);
@@ -112,13 +122,7 @@ $pdf->Cell(90, 10, utf8_decode('Assinatura do aluno: ___________________'), 0, 0
 $pdf->Ln(15);
 $pdf->Cell(0, 10, utf8_decode('Carimbo/Assinatura do coordenador do setor: _______________'), 0, 1, 'L');
 
-// Logo IFFar
-$logoPath = '../View/img/logoiff.png';
-if (file_exists($logoPath)) {
-    $pdf->Image($logoPath, 170, 265, 25); // Canto inferior direito
-}
-
-// Definir cabeçalhos para download do PDF
+// Cabeçalhos HTTP
 header('Content-Type: application/pdf');
 header('Content-Disposition: inline; filename="Folha_Ponto_' . $nomeMes . '_' . $ano . '.pdf"');
 

@@ -26,7 +26,6 @@ try {
     $conexao = (new Conexao())->getConexao();
     $registroDAO = new RegistroDAO($conexao);
 
-    // Estado do usuário (chegada ou saída)
     if (!isset($_SESSION['estado'])) {
         $_SESSION['estado'] = 'chegada';
     }
@@ -54,7 +53,6 @@ try {
         }
     }
 
-    // Atualiza ação
     $_SESSION['acao'] = ($_SESSION['estado'] === 'saida') ? 'chegada' : 'saida';
 
     header('Location: ../View/telainicial.php');

@@ -7,8 +7,20 @@ if (!isset($_SESSION['id'])) {
     exit;
 }
 
-// Controle de acesso: admin pode cadastrar supervisor e supervisor pode cadastrar bolsista
-if ($_SESSION['tipo'] != 'admin' && $_SESSION['tipo'] != 'supervisor') {
+/*
+    ACESSO PERMITIDO A:
+    - admin
+    - supervisor
+    - bolsista
+
+    APENAS admin e supervisor podem cadastrar usuários.
+    O bolsista pode acessar a tela inicial, mas sem ver esses menus.
+*/
+
+// Se o tipo NÃO for um dos permitidos → acesso negado
+$tipo = $_SESSION['tipo'];
+
+if ($tipo !== 'admin' && $tipo !== 'supervisor' && $tipo !== 'bolsista') {
     echo "Acesso negado!";
     exit;
 }
@@ -34,6 +46,7 @@ if (isset($_POST['registro'])) {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-BR">
