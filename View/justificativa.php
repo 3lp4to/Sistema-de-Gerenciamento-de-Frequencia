@@ -7,8 +7,8 @@ if (!isset($_SESSION['id'])) {
     exit;
 }
 
-// Redireciona para a tela inicial se o usuário não for 'admin' ou 'supervisor'
-if (!in_array($_SESSION['tipo'], ['admin', 'supervisor'])) {
+// PERMITIR: admin, supervisor e bolsista
+if (!in_array($_SESSION['tipo'], ['admin', 'supervisor', 'bolsista'])) {
     echo "Acesso negado!";
     exit;
 }

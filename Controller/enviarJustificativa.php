@@ -2,12 +2,16 @@
 session_start();
 include_once "../Conexao/Conexao.php"; // Conexão com o banco de dados
 
-// Verificar se o usuário está logado
 if (!isset($_SESSION['id'])) {
-    header('Location: ../View/login.php');
+    header('Location: login.php');
     exit;
 }
 
+// PERMITIR: admin, supervisor e bolsista
+if (!in_array($_SESSION['tipo'], ['admin', 'supervisor', 'bolsista'])) {
+    echo "Acesso negado!";
+    exit;
+}
 // Apenas bolsistas podem enviar justificativa
 if ($_SESSION['tipo'] !== 'bolsista') {
     $_SESSION['msg'] = "Apenas bolsistas podem enviar justificativas!";

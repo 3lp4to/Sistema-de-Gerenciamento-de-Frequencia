@@ -1,14 +1,19 @@
 <?php
 session_start();
 
-// Verifica se o usuário está logado
+// Se não estiver logado, redireciona
 if (!isset($_SESSION['id'])) {
     header('Location: login.php');
     exit;
 }
 
-// Controle de acesso: admin pode cadastrar supervisor e supervisor pode cadastrar bolsista
-if ($_SESSION['tipo'] != 'admin' && $_SESSION['tipo'] != 'supervisor') {
+if ($_SESSION['tipo'] == 'admin') {
+    echo "Bem-vindo, admin!";
+} elseif ($_SESSION['tipo'] == 'supervisor') {
+    echo "Bem-vindo, supervisor!";
+} elseif ($_SESSION['tipo'] == 'bolsista') {
+    echo "Bem-vindo, bolsista!";
+} else {
     echo "Acesso negado!";
     exit;
 }
@@ -42,34 +47,51 @@ if (isset($_POST['registro'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Ponto - IFFar</title>
-    <link rel="stylesheet" href="css/registro.css">
+    <link rel="stylesheet" href="CSS/registro.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body>
-    <header class="animate-in">
-        <h2 class="mb-0">Ponto Eletrônico IFFar</h2>
+    <header class="d-flex justify-content-between align-items-center p-3 bg-success text-white">
+    <h2 class="mb-0">Ponto Eletrônico IFFar</h2>
 
-        <!-- Botão sanduíche -->
-        <div class="menu-container">
-            <button class="menu-btn" id="menuToggle">
-                ☰
+    <!-- Botão de menu (hambúrguer) -->
+    <div class="menu-container position-relative">
+        <button class="menu-btn btn btn-light text-success fw-bold" id="menuToggle">
+            ☰ Menu
+        </button>
+
+        <!-- Menu dropdown animado -->
+        <div class="menu-dropdown shadow-lg" id="menuDropdown">
+            <!-- Botões gerais -->
+            <button class="btn btn-outline-success w-100 my-1" onclick="window.location.href='justificativa.php'">
+                Justificar Falta / Registro Incorreto
             </button>
-            <div class="menu-dropdown" id="menuDropdown">
-                <!-- Menu de acordo com o tipo de usuário -->
-                <a href="justificativa.php">Justificar falta/Registro incorreto</a>
-                <a href="#" id="abrirFolhaPonto">Gerar Folha Ponto (PDF)</a>
-                <a href="../Controller/logout.php">Sair</a>
+            <button class="btn btn-outline-success w-100 my-1" id="abrirFolhaPonto">
+                Gerar Folha Ponto (PDF)
+            </button>
+            <button class="btn btn-outline-danger w-100 my-1" onclick="window.location.href='../Controller/logout.php'">
+                Sair
+            </button>
 
-                <?php if ($_SESSION['tipo'] == 'supervisor'): ?>
-                    <a href="cadastroBolsista.php">Cadastrar Bolsista</a>
-                <?php elseif ($_SESSION['tipo'] == 'admin'): ?>
-                    <a href="cadastroSupervisor.php">Cadastrar Supervisor</a>
-                <?php endif; ?>
-            </div>
+            <!-- Botões por tipo de usuário -->
+            <?php if ($_SESSION['tipo'] == 'supervisor'): ?>
+                <hr>
+                <button class="btn btn-outline-primary w-100 my-1" onclick="window.location.href='cadastroBolsista.php'">
+                    Cadastrar Bolsista
+                </button>
+            <?php elseif ($_SESSION['tipo'] == 'admin'): ?>
+                <hr>
+                <button class="btn btn-outline-primary w-100 my-1" onclick="window.location.href='cadastroSupervisor.php'">
+                    Cadastrar Supervisor
+                </button>
+            <?php endif; ?>
         </div>
-    </header>
+    </div>
+</header>
+
+
 
     <div class="registro-wrapper">
         <!-- Imagem institucional -->
