@@ -40,6 +40,7 @@ if (isset($_POST['registro'])) {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 

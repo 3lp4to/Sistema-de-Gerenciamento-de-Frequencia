@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+
 include_once "../Conexao/Conexao.php";
 
 if (isset($_POST['btLogin'])) {
