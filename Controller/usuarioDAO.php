@@ -10,38 +10,40 @@ class UsuarioDAO
     {
         include_once '../Conexao/Conexao.php';
         $this->conexao = Conexao::getConexao();
+        // Garante que o PDO lance exceções
+        $this->conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
-    /**
-     * 🔹 Cadastrar novo usuário (sem criptografia de senha)
-     */
-    public function cadastrarUsuario(Usuario $usuario)
-    {
-        try {
-            $stmt = $this->conexao->prepare("
-                INSERT INTO usuario (nome, email, setor, login, senha, idsupervisor)
-                VALUES (:nome, :email, :setor, :login, :senha, :idsupervisor)
-            ");
+public function cadastrarUsuario(Usuario $usuario)
+{
+try {
+    $stmt = $this->conexao->prepare("
+        INSERT INTO usuario (nome, email, setor, login, senha, idsupervisor)
+        VALUES (:nome, :email, :setor, :login, :senha, :idsupervisor)
+    ");
 
-            $stmt->bindValue(":nome", $usuario->getNome());
-            $stmt->bindValue(":email", $usuario->getEmail());
-            $stmt->bindValue(":setor", $usuario->getSetor());
-            $stmt->bindValue(":login", $usuario->getLogin());
-            $stmt->bindValue(":senha", $usuario->getSenha()); // Senha em texto puro
-            $stmt->bindValue(":idsupervisor", $usuario->getIdSupervisor(), PDO::PARAM_INT);
+    $stmt->bindValue(":nome", $usuario->getNome());
+    $stmt->bindValue(":email", $usuario->getEmail());
+    $stmt->bindValue(":setor", $usuario->getSetor());
+    $stmt->bindValue(":login", $usuario->getLogin());
+    $stmt->bindValue(":senha", $usuario->getSenha()); // senha em texto puro
 
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            // Em produção, registrar o erro em um log e mostrar uma mensagem genérica
-            error_log($e->getMessage()); // Log do erro
-            echo "Erro ao cadastrar o usuário. Tente novamente mais tarde.";
-            return false;
-        }
-    }
+    // se for supervisor, força NULL
+    $stmt->bindValue(":idsupervisor", null, PDO::PARAM_NULL);
 
-    /**
-     * 🔹 Buscar usuário por ID
-     */
+    $stmt->execute();
+    return true;
+
+} catch (PDOException $e) {
+    // Mostra o erro real do banco
+    echo "Erro real do banco: " . $e->getMessage();
+    return false;
+}
+}
+
+
+
+
     public function buscarPorId($id)
     {
         try {
@@ -55,15 +57,12 @@ class UsuarioDAO
 
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            error_log($e->getMessage()); // Log do erro
-            echo "Erro ao buscar o usuário. Tente novamente mais tarde.";
+            error_log($e->getMessage());
+            echo "Erro ao buscar o usuário: " . $e->getMessage();
             return null;
         }
     }
 
-    /**
-     * 🔹 Listar todos os usuários
-     */
     public function listarTodos()
     {
         try {
@@ -74,15 +73,12 @@ class UsuarioDAO
             $stmt = $this->conexao->query($sql);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            error_log($e->getMessage()); // Log do erro
-            echo "Erro ao listar usuários. Tente novamente mais tarde.";
+            error_log($e->getMessage());
+            echo "Erro ao listar usuários: " . $e->getMessage();
             return [];
         }
     }
 
-    /**
-     * 🔹 Buscar usuário por login (para login do sistema)
-     */
     public function buscarPorLogin($login)
     {
         try {
@@ -93,15 +89,12 @@ class UsuarioDAO
 
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            error_log($e->getMessage()); // Log do erro
-            echo "Erro ao buscar o login. Tente novamente mais tarde.";
+            error_log($e->getMessage());
+            echo "Erro ao buscar o login: " . $e->getMessage();
             return null;
         }
     }
 
-    /**
-     * 🔹 Atualizar dados do usuário (sem criptografia de senha)
-     */
     public function atualizarUsuario(Usuario $usuario)
     {
         try {
@@ -119,21 +112,24 @@ class UsuarioDAO
             $stmt->bindValue(":email", $usuario->getEmail());
             $stmt->bindValue(":setor", $usuario->getSetor());
             $stmt->bindValue(":login", $usuario->getLogin());
-            $stmt->bindValue(":senha", $usuario->getSenha()); // Senha em texto puro
-            $stmt->bindValue(":idsupervisor", $usuario->getIdSupervisor(), PDO::PARAM_INT);
+            $stmt->bindValue(":senha", $usuario->getSenha());
+
+            if (is_null($usuario->getIdSupervisor())) {
+                $stmt->bindValue(":idsupervisor", null, PDO::PARAM_NULL);
+            } else {
+                $stmt->bindValue(":idsupervisor", $usuario->getIdSupervisor(), PDO::PARAM_INT);
+            }
+
             $stmt->bindValue(":id", $usuario->getId(), PDO::PARAM_INT);
 
             return $stmt->execute();
         } catch (PDOException $e) {
-            error_log($e->getMessage()); // Log do erro
-            echo "Erro ao atualizar o usuário. Tente novamente mais tarde.";
+            error_log($e->getMessage());
+            echo "Erro ao atualizar o usuário: " . $e->getMessage();
             return false;
         }
     }
 
-    /**
-     * 🔹 Excluir usuário
-     */
     public function excluirUsuario($id)
     {
         try {
@@ -143,15 +139,12 @@ class UsuarioDAO
 
             return $stmt->execute();
         } catch (PDOException $e) {
-            error_log($e->getMessage()); // Log do erro
-            echo "Erro ao excluir o usuário. Tente novamente mais tarde.";
+            error_log($e->getMessage());
+            echo "Erro ao excluir o usuário: " . $e->getMessage();
             return false;
         }
     }
 
-    /**
-     * 🔹 Listar subordinados de um supervisor
-     */
     public function listarPorSupervisor($idSupervisor)
     {
         try {
@@ -166,8 +159,8 @@ class UsuarioDAO
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            error_log($e->getMessage()); // Log do erro
-            echo "Erro ao listar subordinados. Tente novamente mais tarde.";
+            error_log($e->getMessage());
+            echo "Erro ao listar subordinados: " . $e->getMessage();
             return [];
         }
     }

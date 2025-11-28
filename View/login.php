@@ -41,10 +41,7 @@
                     </div>
 
                     <input type="submit" value="Entrar" name="btLogin" class="btn-login">
-
-                    <div class="register-link">
-                        <p>Não possui uma conta? <a href="cadastro.php">Cadastre-se</a></p>
-                    </div>
+                    
                 </form>
             </div>
         </div>

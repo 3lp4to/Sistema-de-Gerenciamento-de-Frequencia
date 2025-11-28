@@ -83,7 +83,6 @@ $pdf->SetFont('Arial', '', 12);
 $pdf->Cell(0, 7, utf8_decode('FICHA DE REGISTRO DE ATIVIDADES - ' . $nomeMes), 0, 1, 'C');
 $pdf->Ln(10);
 
-// Dados do aluno
 $pdf->SetFont('Arial', '', 12);
 $pdf->Cell(35, 8, utf8_decode('Nome do aluno:'), 0, 0);
 $pdf->SetFont('Arial', 'B', 12);
@@ -94,7 +93,6 @@ $pdf->Cell(35, 8, utf8_decode('Setor:'), 0, 0);
 $pdf->Cell(0, 8, utf8_decode($setorUsuario), 0, 1);
 $pdf->Ln(5);
 
-// Tabela de registros
 $pdf->SetFont('Arial', 'B', 11);
 $pdf->SetFillColor(200, 200, 200);
 $pdf->Cell(25, 10, utf8_decode('Dia'), 1, 0, 'C', true);
@@ -110,7 +108,6 @@ for ($dia = 1; $dia <= $diasNoMes; $dia++) {
     $pdf->Cell(50, 8, $dadosDias[$dia]['horas'] ?? '', 1, 1, 'C');
 }
 
-// Total de horas no mês
 $pdf->Ln(4);
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->Cell(0, 10, utf8_decode("Total de horas no mês: $totalHoras"), 0, 1, 'R');
@@ -122,7 +119,6 @@ $pdf->Cell(90, 10, utf8_decode('Assinatura do aluno: ___________________'), 0, 0
 $pdf->Ln(15);
 $pdf->Cell(0, 10, utf8_decode('Carimbo/Assinatura do coordenador do setor: _______________'), 0, 1, 'L');
 
-// Cabeçalhos HTTP
 header('Content-Type: application/pdf');
 header('Content-Disposition: inline; filename="Folha_Ponto_' . $nomeMes . '_' . $ano . '.pdf"');
 

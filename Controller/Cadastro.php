@@ -1,5 +1,4 @@
 <?php
-include_once "../Conexao/Conexao.php";
 include_once "../Model/Usuario.php";
 include_once "../Controller/UsuarioDAO.php";
 
@@ -13,13 +12,13 @@ if (isset($_POST['btCadastrar'])) {
 
     // Verifica campos obrigatórios
     if (empty($nome) || empty($email) || empty($setor) || empty($login) || empty($senha) || empty($confSenha)) {
-        echo "<script>alert('Por favor, preencha todos os campos.'); window.location.href='../View/cadastro.php';</script>";
+        echo "<script>alert('Por favor, preencha todos os campos.'); window.location.href='../View/Cadastro.php';</script>";
         exit;
     }
 
     // Verifica se as senhas coincidem
     if ($senha !== $confSenha) {
-        echo "<script>alert('As senhas não coincidem!'); window.location.href='../View/cadastro.php';</script>";
+        echo "<script>alert('As senhas não coincidem!'); window.location.href='../View/Cadastro.php';</script>";
         exit;
     }
 
@@ -27,19 +26,24 @@ if (isset($_POST['btCadastrar'])) {
     $usuarioDAO = new UsuarioDAO();
     $usuarioExistente = $usuarioDAO->buscarPorLogin($login);
     if ($usuarioExistente) {
-        echo "<script>alert('O login já está em uso!'); window.location.href='../View/cadastro.php';</script>";
+        echo "<script>alert('O login já está em uso!'); window.location.href='../View/Cadastro.php';</script>";
         exit;
     }
 
-    // Cria o objeto do usuário (sem criptografia)
-    $usuario = new Usuario($nome, $email, $setor, $login, $senha, $supervisorId, 'bolsista');
+    // Cria o usuário como SUPERVISOR, idsupervisor = NULL
+ $usuario = new Usuario($nome, $email, $setor, $login, $senha, 'supervisor', null);
 
-    // Tenta cadastrar o usuário no banco
-    if ($usuarioDAO->cadastrarUsuario($usuario)) {
-        echo "<script>alert('Usuário cadastrado com sucesso!'); window.location.href='../View/login.php';</script>";
-        exit;
-    } else {
-        echo "<script>alert('Erro ao cadastrar. Tente novamente.'); window.location.href='../View/cadastro.php';</script>";
+
+
+    try {
+        if ($usuarioDAO->cadastrarUsuario($usuario)) {
+            echo "<script>alert('Supervisor cadastrado com sucesso!'); window.location.href='../View/login.php';</script>";
+            exit;
+        } else {
+            throw new Exception("Erro desconhecido ao cadastrar o supervisor.");
+        }
+    } catch (Exception $e) {
+        echo "<script>alert('Erro ao cadastrar: " . $e->getMessage() . "'); window.location.href='../View/Cadastro.php';</script>";
         exit;
     }
 }
