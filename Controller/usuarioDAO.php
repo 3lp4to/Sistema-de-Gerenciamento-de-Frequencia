@@ -16,30 +16,31 @@ class UsuarioDAO
 
 public function cadastrarUsuario(Usuario $usuario)
 {
-try {
-    $stmt = $this->conexao->prepare("
-        INSERT INTO usuario (nome, email, setor, login, senha, idsupervisor)
-        VALUES (:nome, :email, :setor, :login, :senha, :idsupervisor)
-    ");
+    try {
+        $stmt = $this->conexao->prepare("
+            INSERT INTO usuario (nome, email, setor, login, senha, idsupervisor, tipo)
+            VALUES (:nome, :email, :setor, :login, :senha, :idsupervisor, :tipo)
+        ");
 
-    $stmt->bindValue(":nome", $usuario->getNome());
-    $stmt->bindValue(":email", $usuario->getEmail());
-    $stmt->bindValue(":setor", $usuario->getSetor());
-    $stmt->bindValue(":login", $usuario->getLogin());
-    $stmt->bindValue(":senha", $usuario->getSenha()); // senha em texto puro
+        $stmt->bindValue(":nome", $usuario->getNome());
+        $stmt->bindValue(":email", $usuario->getEmail());
+        $stmt->bindValue(":setor", $usuario->getSetor());
+        $stmt->bindValue(":login", $usuario->getLogin());
+        $stmt->bindValue(":senha", $usuario->getSenha());
+        $stmt->bindValue(":tipo", $usuario->getTipo()); // <-- AQUI ESTÁ O QUE FALTAVA
 
-    // se for supervisor, força NULL
-    $stmt->bindValue(":idsupervisor", null, PDO::PARAM_NULL);
+        // supervisor não tem supervisor
+        $stmt->bindValue(":idsupervisor", null, PDO::PARAM_NULL);
 
-    $stmt->execute();
-    return true;
+        $stmt->execute();
+        return true;
 
-} catch (PDOException $e) {
-    // Mostra o erro real do banco
-    echo "Erro real do banco: " . $e->getMessage();
-    return false;
+    } catch (PDOException $e) {
+        echo "Erro real do banco: " . $e->getMessage();
+        return false;
+    }
 }
-}
+
 
 
 
