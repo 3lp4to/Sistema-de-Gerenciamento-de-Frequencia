@@ -54,31 +54,29 @@ try {
     // ---------------------------
     // CONFIGURAÇÃO DO PHPMailer
     // ---------------------------
-    $mail = new PHPMailer(true);
+   // Configura PHPMailer
+$mail = new PHPMailer(true);
 
-    $mail->isSMTP();
-    $mail->Host       = 'smtp.gmail.com';
-    $mail->SMTPAuth   = true;
+$mail->CharSet = 'UTF-8';
+$mail->Encoding = 'base64';
 
-    // 🔥 COLOQUE AQUI OS DADOS DO SEU GMAIL
-    $mail->Username   = 'gerenciamentoiffar@gmail.com';    // <--- seu Gmail
-    $mail->Password   = 'figv qxtx zkuc ssrw';    // <--- sua senha de app
+$mail->isSMTP();
+$mail->Host       = 'smtp.gmail.com';
+$mail->SMTPAuth   = true;
+$mail->Username   = 'gerenciamentoiffar@gmail.com';
+$mail->Password   = 'figv qxtx zkuc ssrw';
+$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+$mail->Port       = 587;
 
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port       = 587;
+$mail->setFrom('gerenciamentoiffarL@gmail.com', 'Ponto Eletrônico IFFar');
+$mail->addAddress($destinatario);
 
-    // Remetente
-    $mail->setFrom('SEUEMAIL@gmail.com', 'Ponto Eletrônico IFFar');
-
-    // Destinatário (supervisor)
-    $mail->addAddress($destinatario);
-
-    // Corpo da mensagem
-    $mail->isHTML(false);
-    $mail->Subject = "Justificativa de Falta/Erro - " . $usuarioBolsista['nome'];
-    $mail->Body    = 
-        "O bolsista " . $usuarioBolsista['nome'] . " enviou a seguinte justificativa:\n\n" .
-        $justificativa;
+$mail->isHTML(false);
+$mail->Subject = "Justificativa de Falta/Erro - " . $usuarioBolsista['nome'];
+$mail->Body    =
+    "O bolsista " . $usuarioBolsista['nome'] .
+    " enviou a seguinte justificativa:\n\n" .
+    $justificativa;
 
     // Envia o email
     $mail->send();
