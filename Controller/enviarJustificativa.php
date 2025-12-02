@@ -1,12 +1,10 @@
 <?php
 session_start();
 require '../vendor/autoload.php';
-<<<<<<< HEAD
+
 require '../vendor/autoload.php'; // Certifique-se que PHPMailer está instalado via Composer
 include_once "../controller/usuarioDAO.php";
-=======
-include_once "../Controller/UsuarioDAO.php";
->>>>>>> 4afaee3d5dc531973b3d134a1634442a2bccad5c
+
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;

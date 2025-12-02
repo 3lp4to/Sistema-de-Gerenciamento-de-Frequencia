@@ -1,9 +1,7 @@
 <?php
-<<<<<<< HEAD
+
 require '../vendor/autoload.php';
-=======
-require __DIR__ . '/../vendor/autoload.php';
->>>>>>> 4afaee3d5dc531973b3d134a1634442a2bccad5c
+
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
