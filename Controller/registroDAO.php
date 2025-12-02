@@ -1,6 +1,6 @@
 <?php
 
-include_once "../Model/Registro.php";
+include_once "../model/Registro.php";
 
 class RegistroDAO
 {
@@ -8,7 +8,7 @@ class RegistroDAO
 
     public function __construct()
     {
-        include_once '../Conexao/Conexao.php';
+        include_once '../conexao/conexao.php';
         $this->conexao = Conexao::getConexao();
     }
 

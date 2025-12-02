@@ -44,7 +44,7 @@ if (isset($_SESSION['msg'])) {
         <div class="alert alert-info"><?= htmlspecialchars($mensagem) ?></div>
     <?php endif; ?>
 
-    <form action="../Controller/enviarJustificativa.php" method="post" id="formJustificativa">
+    <form action="../controller/enviarjustificativa.php" method="post" id="formJustificativa">
         <!-- Token CSRF para proteção -->
         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
 

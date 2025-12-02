@@ -21,7 +21,7 @@ if (!isset($_SESSION['estado'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Ponto - IFFar</title>
-    <link rel="stylesheet" href="CSS/registro.css">
+    <link rel="stylesheet" href="css/registro.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -54,13 +54,13 @@ if (!isset($_SESSION['estado'])) {
                 <?php endif; ?>
                 <button class="btn btn-outline-success w-100 my-1" id="abrirFolhaPonto">Gerar Folha Ponto (PDF)</button>
                 <button class="btn btn-outline-danger w-100 my-1"
-                    onclick="window.location.href='../Controller/logout.php'">
+                    onclick="window.location.href='../controller/logout.php'">
                     Sair
                 </button>
                 <?php if ($_SESSION['tipo'] == 'supervisor'): ?>
                     <hr>
                     <button class="btn btn-outline-primary w-100 my-1"
-                        onclick="window.location.href='cadastroBolsista.php'">
+                        onclick="window.location.href='cadastrobolsista.php'">
                         Cadastrar Bolsista
                     </button>
                 <?php elseif ($_SESSION['tipo'] == 'admin'): ?>
@@ -82,7 +82,7 @@ if (!isset($_SESSION['estado'])) {
             <div class="form-box">
                 <h4 class="mb-3">Registro de Ponto</h4>
 
-                <form action="../Controller/cadastroRegistro.php" method="post">
+                <form action="../controller/cadastroregistro.php" method="post">
                     <input type="submit" name="registro" class="btn btn-primary w-100"
                         value="<?= ($_SESSION['estado'] === 'chegada') ? 'Registrar Chegada' : 'Registrar Saída'; ?>">
                 </form>
@@ -184,7 +184,7 @@ if (!isset($_SESSION['estado'])) {
     <div class="modal fade" id="modalFolhaPonto" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="../Controller/gerarFolhaPonto.php" method="get" target="_blank">
+                <form action="../Controller/gerarfolhaponto.php" method="get" target="_blank">
                     <div class="modal-header">
                         <h5 class="modal-title">Gerar Folha de Ponto</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>

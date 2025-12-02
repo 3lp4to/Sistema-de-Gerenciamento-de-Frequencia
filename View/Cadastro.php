@@ -18,7 +18,7 @@
             <h2>Cadastro de Supervisor</h2>
             <p>Cadastre um novo supervisor no sistema do IFFar SVS</p>
 
-            <form action="../Controller/Cadastro.php" method="post" id="formCadastro">
+            <form action="../controller/cadastro.php" method="post" id="formCadastro">
                 <div class="form-group mb-3">
                     <label for="nome">Nome completo</label>
                     <input type="text" name="nome" id="nome" required class="form-control">

@@ -2,7 +2,7 @@
 
 session_start();
 
-include_once "../Conexao/Conexao.php";
+include_once "../conexao/conexao.php";
 
 if (isset($_POST['btLogin'])) {
     $login = trim($_POST['login']);
@@ -10,7 +10,7 @@ if (isset($_POST['btLogin'])) {
 
     if (empty($login) || empty($senha)) {
         $_SESSION['msg_erro'] = "Por favor, preencha todos os campos!";
-        header('Location: ../View/login.php');
+        header('Location: ../view/login.php');
         exit;
     }
 
@@ -33,12 +33,12 @@ if (isset($_POST['btLogin'])) {
             exit;
         } else {
             $_SESSION['msg_erro'] = "Login ou senha inválidos!";
-            header('Location: ../View/login.php');
+            header('Location: ../view/login.php');
             exit;
         }
     } catch (PDOException $e) {
         $_SESSION['msg_erro'] = "Erro ao conectar ao banco de dados: " . $e->getMessage();
-        header('Location: ../View/login.php');
+        header('Location: ../view/login.php');
         exit;
     }
 }

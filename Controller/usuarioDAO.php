@@ -1,6 +1,6 @@
 <?php
 
-include_once "../Model/Usuario.php";
+include_once "../model/usuario.php";
 
 class UsuarioDAO
 {

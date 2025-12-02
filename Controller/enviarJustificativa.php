@@ -2,7 +2,7 @@
 session_start();
 require '../vendor/autoload.php';
 require '../vendor/autoload.php'; // Certifique-se que PHPMailer está instalado via Composer
-include_once "../Controller/UsuarioDAO.php";
+include_once "../controller/usuarioDAO.php";
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -10,21 +10,21 @@ use PHPMailer\PHPMailer\Exception;
 // Só bolsistas podem enviar justificativa
 if (!isset($_SESSION['id']) || $_SESSION['tipo'] !== 'bolsista') {
     $_SESSION['msg'] = "Acesso negado!";
-    header("Location: ../View/justificativa.php");
+    header("Location: ../view/justificativa.php");
     exit;
 }
 
 // Verifica CSRF token
 if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
     $_SESSION['msg'] = "Erro de segurança! Tente novamente.";
-    header("Location: ../View/justificativa.php");
+    header("Location: ../view/justificativa.php");
     exit;
 }
 
 // Verifica se o campo justificativa foi enviado
 if (!isset($_POST['justificativa']) || empty(trim($_POST['justificativa']))) {
     $_SESSION['msg'] = "Por favor, preencha o campo de justificativa.";
-    header("Location: ../View/justificativa.php");
+    header("Location: ../view/justificativa.php");
     exit;
 }
 
@@ -38,7 +38,7 @@ try {
     $usuarioBolsista = $usuarioDAO->buscarPorId($_SESSION['id']);
     if (!$usuarioBolsista || empty($usuarioBolsista['idsupervisor'])) {
         $_SESSION['msg'] = "Erro: supervisor não encontrado.";
-        header("Location: ../View/justificativa.php");
+        header("Location: ../view/justificativa.php");
         exit;
     }
 
@@ -48,7 +48,7 @@ try {
 
     if (!$destinatario) {
         $_SESSION['msg'] = "Erro: e-mail do supervisor não encontrado.";
-        header("Location: ../View/justificativa.php");
+        header("Location: ../view/justificativa.php");
         exit;
     }
 
@@ -76,5 +76,5 @@ try {
     $_SESSION['msg'] = "Erro ao enviar a justificativa: " . $mail->ErrorInfo;
 }
 
-header("Location: ../View/justificativa.php");
+header("Location: ../view/justificativa.php");
 exit;

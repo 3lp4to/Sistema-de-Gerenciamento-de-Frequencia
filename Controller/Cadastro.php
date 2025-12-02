@@ -1,6 +1,6 @@
 <?php
-include_once "../Model/Usuario.php";
-include_once "../Controller/UsuarioDAO.php";
+include_once "../model/usuario.php";
+include_once "../controller/usuarioDAO.php";
 
 if (isset($_POST['btCadastrar'])) {
     $nome = trim($_POST['nome']);
@@ -12,13 +12,13 @@ if (isset($_POST['btCadastrar'])) {
 
     // Verifica campos obrigatórios
     if (empty($nome) || empty($email) || empty($setor) || empty($login) || empty($senha) || empty($confSenha)) {
-        echo "<script>alert('Por favor, preencha todos os campos.'); window.location.href='../View/Cadastro.php';</script>";
+        echo "<script>alert('Por favor, preencha todos os campos.'); window.location.href='../view/cadastro.php';</script>";
         exit;
     }
 
     // Verifica se as senhas coincidem
     if ($senha !== $confSenha) {
-        echo "<script>alert('As senhas não coincidem!'); window.location.href='../View/Cadastro.php';</script>";
+        echo "<script>alert('As senhas não coincidem!'); window.location.href='../view/cadastro.php';</script>";
         exit;
     }
 
@@ -26,7 +26,7 @@ if (isset($_POST['btCadastrar'])) {
     $usuarioDAO = new UsuarioDAO();
     $usuarioExistente = $usuarioDAO->buscarPorLogin($login);
     if ($usuarioExistente) {
-        echo "<script>alert('O login já está em uso!'); window.location.href='../View/Cadastro.php';</script>";
+        echo "<script>alert('O login já está em uso!'); window.location.href='../view/cadastro.php';</script>";
         exit;
     }
 
@@ -37,13 +37,13 @@ if (isset($_POST['btCadastrar'])) {
 
     try {
         if ($usuarioDAO->cadastrarUsuario($usuario)) {
-            echo "<script>alert('Supervisor cadastrado com sucesso!'); window.location.href='../View/login.php';</script>";
+            echo "<script>alert('Supervisor cadastrado com sucesso!'); window.location.href='../view/login.php';</script>";
             exit;
         } else {
             throw new Exception("Erro desconhecido ao cadastrar o supervisor.");
         }
     } catch (Exception $e) {
-        echo "<script>alert('Erro ao cadastrar: " . $e->getMessage() . "'); window.location.href='../View/Cadastro.php';</script>";
+        echo "<script>alert('Erro ao cadastrar: " . $e->getMessage() . "'); window.location.href='../view/cadastro.php';</script>";
         exit;
     }
 }

@@ -29,7 +29,7 @@
                     <?php unset($_SESSION['erro_login']); ?>
                 <?php endif; ?>
 
-                <form action="../Controller/login.php" method="post">
+                <form action="../controller/login.php" method="post">
                     <div class="form-group">
                         <label for="login">Login</label>
                         <input type="text" id="login" name="login" required aria-label="Login">

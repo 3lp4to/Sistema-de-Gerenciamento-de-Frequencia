@@ -3,8 +3,8 @@ session_start();
 date_default_timezone_set('America/Sao_Paulo');
 
 require_once '../lib/fpdf186/fpdf.php';
-require_once '../Controller/UsuarioDAO.php';
-require_once '../Controller/RegistroDAO.php';
+require_once '../controller/usuarioDAO.php';
+require_once '../controller/registroDAO.php';
 
 if (!isset($_SESSION['id'])) {
     exit('Usuário não autenticado');
@@ -56,7 +56,7 @@ $nomeMes = $nomesMeses[$mes];
 // ================================================================
 class PDF extends FPDF {
     function Footer() {
-        $logoPath = '../View/img/logoiff.png';
+        $logoPath = '../view/img/logoiff.png';
 
         if (file_exists($logoPath)) {
             // Posição a 25–30mm do rodapé

@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once '../Model/Registro.php';
-require_once 'RegistroDAO.php';
-require_once '../Conexao/Conexao.php';
+require_once '../model/registro.php';
+require_once 'registroDAO.php';
+require_once '../conexao/conexao.php';
 
 if (!isset($_SESSION['id'])) {
     header('Location: login.php');
@@ -11,7 +11,7 @@ if (!isset($_SESSION['id'])) {
 
 if ($_SESSION['tipo'] === 'admin') {
     $_SESSION['mensagem'] = "<p class='alert alert-danger'>Administradores não podem registrar ponto.</p>";
-    header('Location: ../View/telainicial.php');
+    header('Location: ../view/telainicial.php');
     exit;
 }
 
@@ -53,12 +53,12 @@ try {
         }
     }
 
-    header('Location: ../View/telainicial.php');
+    header('Location: ../view/telainicial.php');
     exit;
 
 } catch (Exception $e) {
     $_SESSION['mensagem'] = "<p class='alert alert-danger'>Erro: " . $e->getMessage() . "</p>";
-    header('Location: ../View/telainicial.php');
+    header('Location: ../view/telainicial.php');
     exit;
 }
 ?>

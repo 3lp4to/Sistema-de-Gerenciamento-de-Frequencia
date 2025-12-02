@@ -7,7 +7,7 @@ if (!isset($_SESSION['tipo']) || ($_SESSION['tipo'] != 'supervisor' && $_SESSION
     exit;
 }
 
-include_once "../Controller/UsuarioDAO.php";
+include_once "../Controller/usuarioDAO.php";
 $usuarioDAO = new UsuarioDAO();
 
 // Se for admin → pode escolher supervisor
@@ -39,7 +39,7 @@ if ($_SESSION['tipo'] == 'admin') {
             <h2>Cadastro de Bolsista</h2>
             <p>Cadastre um novo bolsista no sistema do IFFar SVS</p>
 
-            <form action="../Controller/cadastroBolsista.php" method="post" id="formCadastro">
+            <form action="../controller/cadastrobolsista.php" method="post" id="formCadastro">
 
                 <div class="form-group mb-3">
                     <label for="nome">Nome completo</label>
