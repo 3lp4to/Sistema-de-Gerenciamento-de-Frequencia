@@ -1,7 +1,6 @@
 <?php
 session_start();
 require '../vendor/autoload.php';
-require '../vendor/autoload.php'; // Certifique-se que PHPMailer está instalado via Composer
 include_once "../Controller/UsuarioDAO.php";
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -52,23 +51,36 @@ try {
         exit;
     }
 
-    // Configura PHPMailer
+    // ---------------------------
+    // CONFIGURAÇÃO DO PHPMailer
+    // ---------------------------
     $mail = new PHPMailer(true);
+
     $mail->isSMTP();
-    $mail->Host       = 'smtp.seuservidor.com';   // Coloque o servidor SMTP
+    $mail->Host       = 'smtp.gmail.com';
     $mail->SMTPAuth   = true;
-    $mail->Username   = 'seuemail@seudominio.com'; // Usuário SMTP
-    $mail->Password   = 'suasenha';                // Senha SMTP
+
+    // 🔥 COLOQUE AQUI OS DADOS DO SEU GMAIL
+    $mail->Username   = 'gerenciamentoiffar@gmail.com';    // <--- seu Gmail
+    $mail->Password   = 'figv qxtx zkuc ssrw';    // <--- sua senha de app
+
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port       = 587;                       // Porta SMTP
+    $mail->Port       = 587;
 
-    $mail->setFrom('no-reply@iffar.edu.br', 'Ponto Eletrônico IFFar');
-    $mail->addAddress($destinatario); // Destinatário (supervisor)
+    // Remetente
+    $mail->setFrom('SEUEMAIL@gmail.com', 'Ponto Eletrônico IFFar');
 
-    $mail->isHTML(false); // Texto simples
+    // Destinatário (supervisor)
+    $mail->addAddress($destinatario);
+
+    // Corpo da mensagem
+    $mail->isHTML(false);
     $mail->Subject = "Justificativa de Falta/Erro - " . $usuarioBolsista['nome'];
-    $mail->Body    = "O bolsista " . $usuarioBolsista['nome'] . " enviou a seguinte justificativa:\n\n" . $justificativa;
+    $mail->Body    = 
+        "O bolsista " . $usuarioBolsista['nome'] . " enviou a seguinte justificativa:\n\n" .
+        $justificativa;
 
+    // Envia o email
     $mail->send();
     $_SESSION['msg'] = "Justificativa enviada com sucesso para o supervisor.";
 

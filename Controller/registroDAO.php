@@ -41,14 +41,13 @@ class RegistroDAO
     public function registrarSaida(Registro $registro)
     {
         try {
-            // Verifica se o registro de chegada existe antes de registrar a saída
             $ultimoRegistro = $this->buscarUltimoRegistro($registro->getIdUsuario());
 
             if (!$ultimoRegistro || $ultimoRegistro['horaSaida'] !== null) {
-                return false; // Não pode registrar saída se não houver chegada ou se a saída já foi registrada
+                return false; 
             }
 
-            // Calcula as horas trabalhadas
+            
             $horaChegada = new DateTime($registro->getHoraChegada());
             $horaSaida = new DateTime($registro->getHoraSaida());
             $intervalo = $horaChegada->diff($horaSaida);
