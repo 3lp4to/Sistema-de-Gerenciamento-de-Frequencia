@@ -1,8 +1,12 @@
 <?php
 session_start();
 require '../vendor/autoload.php';
+<<<<<<< HEAD
 require '../vendor/autoload.php'; // Certifique-se que PHPMailer está instalado via Composer
 include_once "../controller/usuarioDAO.php";
+=======
+include_once "../Controller/UsuarioDAO.php";
+>>>>>>> 4afaee3d5dc531973b3d134a1634442a2bccad5c
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -52,23 +56,34 @@ try {
         exit;
     }
 
-    // Configura PHPMailer
-    $mail = new PHPMailer(true);
-    $mail->isSMTP();
-    $mail->Host       = 'smtp.seuservidor.com';   // Coloque o servidor SMTP
-    $mail->SMTPAuth   = true;
-    $mail->Username   = 'seuemail@seudominio.com'; // Usuário SMTP
-    $mail->Password   = 'suasenha';                // Senha SMTP
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port       = 587;                       // Porta SMTP
+    // ---------------------------
+    // CONFIGURAÇÃO DO PHPMailer
+    // ---------------------------
+   // Configura PHPMailer
+$mail = new PHPMailer(true);
 
-    $mail->setFrom('no-reply@iffar.edu.br', 'Ponto Eletrônico IFFar');
-    $mail->addAddress($destinatario); // Destinatário (supervisor)
+$mail->CharSet = 'UTF-8';
+$mail->Encoding = 'base64';
 
-    $mail->isHTML(false); // Texto simples
-    $mail->Subject = "Justificativa de Falta/Erro - " . $usuarioBolsista['nome'];
-    $mail->Body    = "O bolsista " . $usuarioBolsista['nome'] . " enviou a seguinte justificativa:\n\n" . $justificativa;
+$mail->isSMTP();
+$mail->Host       = 'smtp.gmail.com';
+$mail->SMTPAuth   = true;
+$mail->Username   = 'gerenciamentoiffar@gmail.com';
+$mail->Password   = 'figv qxtx zkuc ssrw';
+$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+$mail->Port       = 587;
 
+$mail->setFrom('gerenciamentoiffarL@gmail.com', 'Ponto Eletrônico IFFar');
+$mail->addAddress($destinatario);
+
+$mail->isHTML(false);
+$mail->Subject = "Justificativa de Falta/Erro - " . $usuarioBolsista['nome'];
+$mail->Body    =
+    "O bolsista " . $usuarioBolsista['nome'] .
+    " enviou a seguinte justificativa:\n\n" .
+    $justificativa;
+
+    // Envia o email
     $mail->send();
     $_SESSION['msg'] = "Justificativa enviada com sucesso para o supervisor.";
 

@@ -27,10 +27,15 @@ public function cadastrarUsuario(Usuario $usuario)
         $stmt->bindValue(":setor", $usuario->getSetor());
         $stmt->bindValue(":login", $usuario->getLogin());
         $stmt->bindValue(":senha", $usuario->getSenha());
-        $stmt->bindValue(":tipo", $usuario->getTipo()); // <-- AQUI ESTÁ O QUE FALTAVA
+        $stmt->bindValue(":tipo",  $usuario->getTipo());
 
-        // supervisor não tem supervisor
-        $stmt->bindValue(":idsupervisor", null, PDO::PARAM_NULL);
+        // Se for bolsista → salva o supervisor corretamente
+        if ($usuario->getTipo() === 'bolsista') {
+            $stmt->bindValue(":idsupervisor", $usuario->getIdSupervisor(), PDO::PARAM_INT);
+        } else {
+            // Admin e supervisor não possuem supervisor
+            $stmt->bindValue(":idsupervisor", null, PDO::PARAM_NULL);
+        }
 
         $stmt->execute();
         return true;
